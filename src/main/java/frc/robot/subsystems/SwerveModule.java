@@ -50,8 +50,8 @@ public class SwerveModule extends SubsystemBase{
     syncTimer.start();
     name = new String(constants.name);
     
-    driveMotor = new TalonFX(constants.driveMotorID);
-    steerMotor = new TalonFX(constants.steerMotorID);
+    driveMotor = new TalonFX(constants.driveMotorID, "SwerveCAN");
+    steerMotor = new TalonFX(constants.steerMotorID, "SwerveCAN");
 
 
 

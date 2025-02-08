@@ -8,12 +8,13 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.RobotConstants;
 
 public class AlgaeClaw extends SubsystemBase {
   /** Creates a new AlgeClaw. */
 
-  SparkMax leftAlgaeClawWheel = new SparkMax(23, MotorType.kBrushless);
-  SparkMax rightAlgaeClawWheel = new SparkMax(7, MotorType.kBrushless);
+  SparkMax leftAlgaeClawWheel = new SparkMax(RobotConstants.algeaClawLeftMotorID, MotorType.kBrushless);
+  SparkMax rightAlgaeClawWheel = new SparkMax(RobotConstants.algeaClawRightMotorID, MotorType.kBrushless);
 
   public AlgaeClaw() {
   }
@@ -26,6 +27,10 @@ public class AlgaeClaw extends SubsystemBase {
 
   public void setSpeed(double speed){
     leftAlgaeClawWheel.set(speed);
-    rightAlgaeClawWheel.set(speed);
+    rightAlgaeClawWheel.set(-speed);
+  }
+  public void stop(){
+    leftAlgaeClawWheel.set(0);
+    rightAlgaeClawWheel.set(0);
   }
 }

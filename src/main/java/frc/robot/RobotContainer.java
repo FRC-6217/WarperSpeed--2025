@@ -9,9 +9,11 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SemiAutoConstants;
 import frc.robot.commands.AlgaeClawCommand;
 import frc.robot.commands.Drive;
+import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ResetDriveTrain;
 import frc.robot.commands.ResetGyro;
 import frc.robot.subsystems.AlgaeClaw;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 import java.util.Map;
@@ -48,6 +50,7 @@ public class RobotContainer {
  
   public final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(m_driverController);
   public final AlgaeClaw algaeClaw = new AlgaeClaw( );
+  public final Elevator elevator = new Elevator();
 
   public SendableChooser<String> autoChooser = new SendableChooser<>();
   public final String autoTest = "newyork";
@@ -124,6 +127,7 @@ public class RobotContainer {
     // todo add unused buttons for driver
 
     // Operator Commands
+    gameOpA.whileTrue(new ElevatorCommand(elevator, 0.1));
 
    
     //Driver Commands

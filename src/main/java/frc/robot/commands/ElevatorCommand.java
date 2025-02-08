@@ -6,20 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeClaw;
+import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlgaeClawCommand extends Command {
+public class ElevatorCommand extends Command {
 
-  public AlgaeClaw algaeClaw;
+  public Elevator elevator;
   public double speed;
-  private String uniqueIDString = "Algae Claw Motor Speed";
-  /** Creates a new AlgeGraber. */
-  public AlgaeClawCommand(AlgaeClaw algaeClaw, double speed) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.algaeClaw = algaeClaw;
+  private String uniqueElevatorString = "Elevator Speed";
+  /** Creates a new ElevatorCommand. */
+  public ElevatorCommand(Elevator elevator, double speed) {
+    this.elevator = elevator;
     this.speed = speed;
-    SmartDashboard.putNumber(uniqueIDString, 0);  
+    SmartDashboard.putNumber(uniqueElevatorString, 0);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -29,14 +29,14 @@ public class AlgaeClawCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = SmartDashboard.getNumber(uniqueIDString, 0);
-    algaeClaw.setSpeed(speed);
+    double speed = SmartDashboard.getNumber(uniqueElevatorString, 0);
+    elevator.setSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algaeClaw.stop();
+    elevator.stop();
   }
 
   // Returns true when the command should end.

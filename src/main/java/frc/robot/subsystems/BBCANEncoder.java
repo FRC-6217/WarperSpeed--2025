@@ -20,7 +20,7 @@ public class BBCANEncoder implements IEncoder{
     BBCANEncoder(Constants constants){
 
         //encoder = new CANcoder(constants.absEncoderID, constants.canTypeString);
-        encoder = new CANcoder(constants.absEncoderID);
+        encoder = new CANcoder(constants.absEncoderID, "SwerveCAN");
         CANcoderConfiguration caNcoderConfiguration = new CANcoderConfiguration();
         caNcoderConfiguration.MagnetSensor.MagnetOffset = constants.absEncoderOffset;
         caNcoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;

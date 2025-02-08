@@ -51,6 +51,11 @@ public final class Constants {
     public static final int driveMotorCurrentLimit = 45;
     public static final double driveWheelGearRatio = 21.4285714;
 
+    //sparkmaxID
+    public static final int algeaClawLeftMotorID = 33;
+    public static final int algeaClawRightMotorID = 34;
+    public static final int elevatorLeftMotorID = 15;
+    public static final int elevatorRightMotorID = 16;
     //Drive and steer PID
     public static final double drivePIDp = 0.55;
     public static final double drivePIDi = 0.8;
@@ -66,10 +71,10 @@ public final class Constants {
     // Competition Robot
 
     //bevel gear on wheel goes rig
-    public static final SwerveModule.Constants frontLeft = new SwerveModule.Constants(0, 10, 11, 23,-0.921387, "Front Left", encoderType.CAN, "CTRSwerve");
-    public static final SwerveModule.Constants frontRight = new SwerveModule.Constants(1, 8, 9, 22, -0.433594, "Front Right", encoderType.CAN,"CTRSwerve");
-    public static final SwerveModule.Constants backLeft = new SwerveModule.Constants(2, 19, 18, 24,-0.852051, "Back Left", encoderType.CAN, "CTRSwerve");
-    public static final SwerveModule.Constants backRight = new SwerveModule.Constants(3, 3, 2, 21,-0.538818, "Back Right", encoderType.CAN,"CTRSwerve");
+    public static final SwerveModule.Constants frontLeft = new SwerveModule.Constants(0, 2, 3, 21,-0.043457, "Front Left", encoderType.CAN, "CTRSwerve");
+    public static final SwerveModule.Constants frontRight = new SwerveModule.Constants(1, 18, 19, 22, -0.170654, "Front Right", encoderType.CAN,"CTRSwerve");
+    public static final SwerveModule.Constants backLeft = new SwerveModule.Constants(2, 8, 9, 24,0.093994, "Back Left", encoderType.CAN, "CTRSwerve");
+    public static final SwerveModule.Constants backRight = new SwerveModule.Constants(3, 10, 11, 23,0.440186, "Back Right", encoderType.CAN,"CTRSwerve");
     public static final double laserNoteThresholdInches = 7.3;
     public static final double indexerStartOffset = .0887;
     public static final double noteDetectorThreshold = 0.000326;

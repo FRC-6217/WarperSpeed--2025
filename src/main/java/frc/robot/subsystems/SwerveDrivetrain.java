@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -39,7 +40,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   public final SwerveModule frontLeftModule;// = new SwerveModule(Constants.RobotConstants.frontLeft);
 
   // public final Pigeon2 pigeon2 = new Pigeon2(50,"CTRSwerve");
-   public final Pigeon2 pigeon2 = new Pigeon2(50);
+   public final Pigeon2 pigeon2 = new Pigeon2(50, "SwerveCAN");
   public SwerveDriveOdometry sOdometry;
   public SwerveDriveKinematics sKinematics;
   public SwerveModule[] modules;
@@ -109,9 +110,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 
 
     // path planner init
-            
-    new PPHolonomicDriveController(null, null);
-    
+     
     AutoBuilder.configure(
       this::getPose, // Robot pose supplier
       this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
