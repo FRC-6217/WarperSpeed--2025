@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
@@ -22,7 +23,7 @@ public class BBCANEncoder implements IEncoder{
 
         //encoder = new CANcoder(constants.absEncoderID, constants.canTypeString);
         encoder = new CANcoder(constants.absEncoderID, "SwerveCAN");
-        CANcoderConfiguration caNcoderConfiguration = new CANcoderConfiguration();
+        CANcoderConfiguration caNcoderConfiguration = new CANcoderConfiguration().withMagnetSensor(new MagnetSensorConfigs().withAbsoluteSensorDiscontinuityPoint(1));
         caNcoderConfiguration.MagnetSensor.MagnetOffset = constants.absEncoderOffset;
         caNcoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         encoder.getConfigurator().apply(caNcoderConfiguration);

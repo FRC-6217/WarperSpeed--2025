@@ -6,19 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.subsystems.AlgaeClaw;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlgaeClawCommand extends Command {
 
   public AlgaeClaw algaeClaw;
-  public double speed;
   private String uniqueIDString = "Algae Claw Motor Speed";
   /** Creates a new AlgeGraber. */
-  public AlgaeClawCommand(AlgaeClaw algaeClaw, double speed) {
+  public AlgaeClawCommand(AlgaeClaw algaeClaw) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algaeClaw = algaeClaw;
-    this.speed = speed;
     SmartDashboard.putNumber(uniqueIDString, 0);  
   }
 
@@ -29,7 +28,7 @@ public class AlgaeClawCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = SmartDashboard.getNumber(uniqueIDString, 0);
+    double speed = SmartDashboard.getNumber(uniqueIDString, RobotConstants.defaultAlgaeClawSpeed);
     algaeClaw.setSpeed(speed);
   }
 

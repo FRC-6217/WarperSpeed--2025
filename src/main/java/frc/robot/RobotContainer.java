@@ -8,12 +8,18 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SemiAutoConstants;
 import frc.robot.commands.AlgaeClawCommand;
+import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.PlacerCommand;
 import frc.robot.commands.ResetDriveTrain;
 import frc.robot.commands.ResetGyro;
 import frc.robot.subsystems.AlgaeClaw;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Placer;
 import frc.robot.subsystems.SwerveDrivetrain;
 
 import java.util.Map;
@@ -51,6 +57,9 @@ public class RobotContainer {
   public final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(m_driverController);
   public final AlgaeClaw algaeClaw = new AlgaeClaw( );
   public final Elevator elevator = new Elevator();
+  public final Climber climber = new Climber();
+  public final Intake intake = new Intake();
+  public final Placer placer = new Placer();
 
   public SendableChooser<String> autoChooser = new SendableChooser<>();
   public final String autoTest = "newyork";
@@ -128,12 +137,15 @@ public class RobotContainer {
 
     // Operator Commands
     gameOpA.whileTrue(new ElevatorCommand(elevator, 0.1));
+    gameOpB.whileTrue(new ClimberCommand(climber));
+    gameOpX.whileTrue(new IntakeCommand(intake));
+    gameOpY.whileTrue(new PlacerCommand(placer));
 
    
     //Driver Commands
     resetDriverEncoder.whileTrue(Commands.runOnce(swerveDrivetrain::initialize, swerveDrivetrain));
 
-    m_driverController.a().whileTrue(new AlgaeClawCommand(algaeClaw, .1));
+    m_driverController.a().whileTrue(new AlgaeClawCommand(algaeClaw));
 
     driverToggleFieldOriented.onTrue(Commands.runOnce(swerveDrivetrain::doRelative));
     driverToggleFieldOriented.onFalse(Commands.runOnce(swerveDrivetrain::doAbsolute));

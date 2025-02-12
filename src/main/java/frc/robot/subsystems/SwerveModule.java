@@ -78,6 +78,7 @@ public class SwerveModule extends SubsystemBase{
     d.ContinuousWrap = true;
     steerPID.withFeedForward(RobotConstants.feedforward);
     steerPID.withSlot(0);
+    steerMotor.getConfigurator().apply(d);
     
     
    

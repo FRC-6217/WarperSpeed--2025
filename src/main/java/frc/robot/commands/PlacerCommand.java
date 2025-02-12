@@ -6,20 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Elevator;
+import frc.robot.Constants.RobotConstants;
+import frc.robot.subsystems.Placer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorCommand extends Command {
+public class PlacerCommand extends Command {
+  /** Creates a new PlacerCommand. */
 
-  public Elevator elevator;
-  public double speed;
-  private String uniqueElevatorStringID = "Elevator Speed";
-  /** Creates a new ElevatorCommand. */
-  public ElevatorCommand(Elevator elevator, double speed) {
-    this.elevator = elevator;
-    this.speed = speed;
-    SmartDashboard.putNumber(uniqueElevatorStringID, 0);
+  public Placer placer;
+  private String uniquePlacerStringID = "Placer Speed";
+
+  public PlacerCommand(Placer placer) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.placer = placer;
+    SmartDashboard.putNumber(uniquePlacerStringID, 0);
   }
 
   // Called when the command is initially scheduled.
@@ -29,14 +29,14 @@ public class ElevatorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = SmartDashboard.getNumber(uniqueElevatorStringID, 0);
-    elevator.setSpeed(speed);
+    double speed = SmartDashboard.getNumber(uniquePlacerStringID, RobotConstants.defaultPlacerSpeed);
+    placer.setSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.stop();
+    placer.stop();
   }
 
   // Returns true when the command should end.
