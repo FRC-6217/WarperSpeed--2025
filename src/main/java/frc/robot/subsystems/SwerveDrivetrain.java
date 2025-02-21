@@ -14,6 +14,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -42,6 +43,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   // public final Pigeon2 pigeon2 = new Pigeon2(50,"CTRSwerve");
    public final Pigeon2 pigeon2 = new Pigeon2(50, "SwerveCAN");
   public SwerveDriveOdometry sOdometry;
+  public SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   public SwerveDriveKinematics sKinematics;
   public SwerveModule[] modules;
   public ChassisSpeeds cSpeeds;
@@ -107,6 +109,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     cSpeeds.omegaRadiansPerSecond = 0;
     cSpeeds.vxMetersPerSecond = 0;
     cSpeeds.vyMetersPerSecond = 0;
+    
 
 
     // path planner init

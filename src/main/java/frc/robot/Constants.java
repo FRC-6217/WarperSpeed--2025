@@ -89,6 +89,7 @@ public final class Constants {
     public static final double indexerStartOffset = .0887;
     public static final double noteDetectorThreshold = 0.000326;
     public static final double feedforward = 0.011;
+    public static final String Limelight4Name = "Limelight 4";
   }
 
 

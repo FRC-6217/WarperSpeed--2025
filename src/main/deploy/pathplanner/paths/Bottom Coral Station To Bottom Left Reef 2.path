@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.0788934426229508,
+        "y": 1.111987704918032
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.808,
+        "y": 1.8409999999999993
+      },
+      "isLocked": true,
+      "linkedName": "Bottom Coral Station"
+    },
+    {
+      "anchor": {
+        "x": 3.6855,
+        "y": 2.972
+      },
+      "prevControl": {
+        "x": 2.8275,
+        "y": 1.9969999999999992
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": "Bottom Left Reef 2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -120.17352002964435
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -124.21570213243739
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Start To Bottom Right Reef 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Right Reef 1 To Bottom Coral Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Grab Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Coral Staion To Bottom Right Reef 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

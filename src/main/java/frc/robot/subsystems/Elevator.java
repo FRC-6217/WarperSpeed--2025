@@ -8,20 +8,30 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants;
 
 public class Elevator extends SubsystemBase {
 
-  TalonFX leader = new TalonFX(RobotConstants.elevatorLeftMotorID);
-  TalonFX follower = new TalonFX(RobotConstants.elevatorRightMotorID);
+  SparkMax followerElevatorMotor = new SparkMax(RobotConstants.elevatorLeftMotorID, MotorType.kBrushless);
+  SparkMax leaderElevatorMotor = new SparkMax(RobotConstants.elevatorRightMotorID, MotorType.kBrushless);
+  SparkMaxConfig followerElevatorConfig = new SparkMaxConfig();
+  SparkMaxConfig leaderElevatorConfig = new SparkMaxConfig();
 
   /** Creates a new Elevator. */
   public Elevator() {
-    Follower myFollower = new Follower(leader.getDeviceID(), true);
-    follower.setControl(myFollower);
+     leaderElevatorConfig.idleMode(IdleMode.kBrake);
+    leaderElevatorMotor.configure(leaderElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    followerElevatorConfig.idleMode(IdleMode.kBrake);
+    followerElevatorConfig.follow(leaderElevatorMotor.getDeviceId(), true);
+    followerElevatorMotor.configure(followerElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
@@ -30,9 +40,9 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setSpeed(double speed){
-    leader.set(speed);
+    leaderElevatorMotor.set(speed);
   }
   public void stop(){
-    leader.set(0);
+    leaderElevatorMotor.set(0);
   }
 }
