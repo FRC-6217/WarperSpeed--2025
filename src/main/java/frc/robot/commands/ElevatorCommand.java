@@ -13,15 +13,13 @@ import frc.robot.subsystems.Elevator;
 public class ElevatorCommand extends Command {
 
   public Elevator elevator;
-  public double position;
   public double setpoint;
-  public String level;
-  boolean error = false;
+  public Elevator.EleLevel level;
   private String uniqueElevatorStringID = "Elevator Speed";
   /** Creates a new ElevatorCommand. */
-  public ElevatorCommand(Elevator elevator, double position) {
+  public ElevatorCommand(Elevator elevator, Elevator.EleLevel level) {
     this.elevator = elevator;
-    this.position = position;
+    this.level = level;
     SmartDashboard.putNumber(uniqueElevatorStringID, 0);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -29,20 +27,7 @@ public class ElevatorCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(position == 0){
-      setpoint = Constants.RobotConstants.L0Position;
-    }else if(position == 1){
-      setpoint = Constants.RobotConstants.L1Position; 
-    }else if(position == 2){
-      setpoint = Constants.RobotConstants.L2Position; 
-    }else if(position == 3){
-      setpoint = Constants.RobotConstants.L3Position; 
-    }else if(position == 4){
-      setpoint = Constants.RobotConstants.L4Position; 
-    }else{
-      error = true; 
-    }
-
+    setpoint = elevator.getDistanceFromLevel(level);
   }
    
 
@@ -67,6 +52,6 @@ public class ElevatorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.getSensor(position) || error;
+    return elevator.getSignalOfLevel(level);
   }
 }

@@ -9,11 +9,13 @@ import java.lang.management.MemoryType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants;
 
 public class Intake extends SubsystemBase {
   SparkMax intakeMotor = new SparkMax(RobotConstants.intakeMotorID, MotorType.kBrushless);
+  String uniqueID = "Intake Speed:";
   /** Creates a new Intake. */
   public Intake() {}
 
@@ -21,8 +23,11 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  public void setSpeed(double speed){
-    intakeMotor.set(speed);
+  public void forward(){
+    intakeMotor.set(SmartDashboard.getNumber(uniqueID, 0));
+  }
+  public void backward(){
+    intakeMotor.set(-SmartDashboard.getNumber(uniqueID, 0));
   }
   public void stop(){
     intakeMotor.set(0);

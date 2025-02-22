@@ -11,8 +11,6 @@ import frc.robot.commands.AlgaeClawCommand;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ElevatorCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.PlacerCommand;
 import frc.robot.commands.ResetDriveTrain;
 import frc.robot.commands.ResetGyro;
 import frc.robot.subsystems.AlgaeClaw;
@@ -21,6 +19,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Placer;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.Elevator.EleLevel;
 
 import java.util.Map;
 
@@ -40,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -53,12 +53,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 
   private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  private final CommandXboxController m_gameOperatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+  private final CommandGenericHID m_gameOperatorController = new CommandGenericHID(OperatorConstants.kOperatorControllerPort);
  
   public final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(m_driverController);
-  public final AlgaeClaw algaeClaw = new AlgaeClaw( );
+  //public final AlgaeClaw algaeClaw = new AlgaeClaw( );
   public final Elevator elevator = new Elevator();
-  public final Climber climber = new Climber();
+  //public final Climber climber = new Climber();
   public final Intake intake = new Intake();
   public final Placer placer = new Placer();
 
@@ -77,11 +77,11 @@ public class RobotContainer {
     swerveDrivetrain.setDefaultCommand(new Drive(swerveDrivetrain, () -> -m_driverController.getLeftX(), () -> -m_driverController.getRightX(), () -> -m_driverController.getLeftY()));
 
     // path planner named commands
-    NamedCommands.registerCommand("L4Elevator", new ElevatorCommand(elevator, 4));
-    NamedCommands.registerCommand("L3Elevator", new ElevatorCommand(elevator, 3));
-    NamedCommands.registerCommand("L2Elevator", new ElevatorCommand(elevator, 2));
-    NamedCommands.registerCommand("L1Elevator", new ElevatorCommand(elevator, 1));
-    NamedCommands.registerCommand("L0Elevator", new ElevatorCommand(elevator, 0));
+    NamedCommands.registerCommand("L4Elevator", new ElevatorCommand(elevator, EleLevel.L4));
+    NamedCommands.registerCommand("L3Elevator", new ElevatorCommand(elevator, EleLevel.L3));
+    NamedCommands.registerCommand("L2Elevator", new ElevatorCommand(elevator, EleLevel.L2));
+    NamedCommands.registerCommand("L1Elevator", new ElevatorCommand(elevator, EleLevel.L1));
+    NamedCommands.registerCommand("L0Elevator", new ElevatorCommand(elevator, EleLevel.L0));
     //NamedCommands.registerCommand("autoFindNoteClockWise", autoFindNoteClockWiseCommand);
     //NamedCommands.registerCommand("autoFindNoteCounterClockWise", autoFindNoteCounterClockWiseCommand);
    // NamedCommands.registerCommand("autoSpeakerLineUp", new CameraDrive(swerveDrivetrain, shooterLimeLight, SemiAutoConstants.speaker, this.intake, this.firstBeamBreak));
@@ -103,22 +103,22 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    Trigger gameOpA = m_gameOperatorController.a();
-    Trigger gameOpB = m_gameOperatorController.b();
-    Trigger gameOpX = m_gameOperatorController.x();
-    Trigger gameOpY = m_gameOperatorController.y();
-    Trigger gameOpLeftBumper = m_gameOperatorController.leftBumper();
-    Trigger gameOpRightBumper = m_gameOperatorController.rightBumper();
-    Trigger gameOpPOVUp = m_gameOperatorController.povUp();
-    Trigger gameOpPOVDown = m_gameOperatorController.povDown();
-    Trigger gameOpPOVRight = m_gameOperatorController.povRight();
-    Trigger gameOpleftTrigger = m_gameOperatorController.axisGreaterThan(Constants.OperatorConstants.leftTriggerAxis,.6);
-    Trigger gameOpRightTrigger = m_gameOperatorController.axisGreaterThan(Constants.OperatorConstants.rightTriggerAxis,.6);
-    Trigger gameOpBackLeft = m_gameOperatorController.button(Constants.OperatorConstants.kLeftBackButton);
-    Trigger gameOpBackRight = m_gameOperatorController.button(Constants.OperatorConstants.kRightBackButton);
-
-
-
+    Trigger button0 = m_gameOperatorController.button(0);
+    Trigger button1 = m_gameOperatorController.button(1);
+    Trigger button2 = m_gameOperatorController.button(2);
+    Trigger button3 = m_gameOperatorController.button(3);
+    Trigger button4 = m_gameOperatorController.button(4);
+    Trigger button5 = m_gameOperatorController.button(5);
+    Trigger button6 = m_gameOperatorController.button(6);
+    Trigger button7 = m_gameOperatorController.button(7);
+    Trigger button8 = m_gameOperatorController.button(0);
+    Trigger button9 = m_gameOperatorController.button(9);
+    Trigger button10 = m_gameOperatorController.button(10);
+    Trigger button11 = m_gameOperatorController.button(11);
+    Trigger button12 = m_gameOperatorController.button(12);
+    Trigger button13 = m_gameOperatorController.button(13);
+    Trigger button14 = m_gameOperatorController.button(14);
+    Trigger button15 = m_gameOperatorController.button(15);
 
 
     Trigger driverBackLeft = m_driverController.button(Constants.OperatorConstants.kLeftBackButton);
@@ -139,19 +139,23 @@ public class RobotContainer {
     Trigger increaseSpeed = m_driverController.axisGreaterThan(Constants.OperatorConstants.rightTriggerAxis,.6);
 
 
-    // todo add unused buttons for driver
 
     // Operator Commands
-    gameOpA.whileTrue(new ElevatorCommand(elevator, 0.1));
-    gameOpB.whileTrue(new ClimberCommand(climber));
-    gameOpX.whileTrue(new IntakeCommand(intake));
-    gameOpY.whileTrue(new PlacerCommand(placer));
+  
+    //gameOpB.whileTrue(new ClimberCommand(climber));
+
+    button0.whileTrue(Commands.runOnce(elevator::moveUp, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
+    button1.whileTrue(Commands.runOnce(elevator::moveDown, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
+    button8.whileTrue(Commands.runOnce(intake::forward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
+    button9.whileTrue(Commands.runOnce(placer::forward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
+    button12.whileTrue(Commands.runOnce(intake::backward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
+    button13.whileTrue(Commands.runOnce(placer::backward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
 
    
     //Driver Commands
     resetDriverEncoder.whileTrue(Commands.runOnce(swerveDrivetrain::initialize, swerveDrivetrain));
 
-    m_driverController.a().whileTrue(new AlgaeClawCommand(algaeClaw));
+   // m_driverController.a().whileTrue(new AlgaeClawCommand(algaeClaw));
 
     driverToggleFieldOriented.onTrue(Commands.runOnce(swerveDrivetrain::doRelative));
     driverToggleFieldOriented.onFalse(Commands.runOnce(swerveDrivetrain::doAbsolute));
@@ -161,6 +165,10 @@ public class RobotContainer {
     fastMode.onTrue(Commands.runOnce(swerveDrivetrain.governor::setFastMode, swerveDrivetrain));
     reduceSpeed.onTrue(Commands.runOnce(swerveDrivetrain.governor::decrement, swerveDrivetrain));
     increaseSpeed.onTrue(Commands.runOnce(swerveDrivetrain.governor::increment, swerveDrivetrain));
+
+
+
+
 
   }
 

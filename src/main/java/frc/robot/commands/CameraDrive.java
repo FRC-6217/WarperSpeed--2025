@@ -77,12 +77,17 @@ public class CameraDrive extends Command {
     SmartDashboard.putString("cameraDriveState", "init");
     //set which pipeline we want
     switch (parameters.target) {
-      case REEF:
+      case REEFLEFT:
         ll.setPipeline(0);
         translationErrorSupplier = ll::getY;
         rotationErrorSupplier = ll::getX;
         strafeErrorsSupplier = ll::getX;
       break;
+      case REEFRIGHT:
+        ll.setPipeline(0);
+        translationErrorSupplier = ll::getY;
+        rotationErrorSupplier = ll::getX;
+        strafeErrorsSupplier = ll::getX;
       default:
         break;
     }

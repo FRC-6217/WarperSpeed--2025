@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.fasterxml.jackson.core.filter.FilteringGeneratorDelegate;
+import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -27,6 +29,22 @@ import frc.robot.Constants.RobotConstants;
 
 public class Elevator extends SubsystemBase {
 
+  public static enum EleLevel
+  {
+    L0,
+    L1,
+    L2,
+    L3,
+    L4,
+    TOTAL,
+  }
+
+  double[] levelToDistance = {RobotConstants.L0Position, RobotConstants.L1Position, RobotConstants.L2Position, RobotConstants.L3Position, RobotConstants.L4Position }; 
+
+  Trigger[] levelToTrigger = new Trigger[EleLevel.TOTAL.ordinal()];
+  
+
+
   SparkMax followerElevatorMotor = new SparkMax(RobotConstants.elevatorLeftMotorID, MotorType.kBrushless);
   SparkMax leaderElevatorMotor = new SparkMax(RobotConstants.elevatorRightMotorID, MotorType.kBrushless);
   SparkMaxConfig followerElevatorConfig = new SparkMaxConfig();
@@ -40,23 +58,24 @@ public class Elevator extends SubsystemBase {
 
   /** Creates a new Elevator. */
   public Elevator() {
-     leaderElevatorConfig.idleMode(IdleMode.kBrake);
+    leaderElevatorConfig.idleMode(IdleMode.kBrake);
+    leaderElevatorConfig.inverted(true);
+    leaderElevatorConfig.encoder.positionConversionFactor(RobotConstants.elevatorScalingFactor);
     leaderElevatorMotor.configure(leaderElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     followerElevatorConfig.idleMode(IdleMode.kBrake);
     followerElevatorConfig.follow(leaderElevatorMotor.getDeviceId(), true);
     followerElevatorMotor.configure(followerElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    L0sensor = followerElevatorMotor.getReverseLimitSwitch().isPressed();
-    L4sensor = followerElevatorMotor.getForwardLimitSwitch().isPressed();
+    L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();
+    L4sensor = leaderElevatorMotor.getForwardLimitSwitch().isPressed();
 
-   
-    new Trigger(() -> L0sensor).onTrue(Commands.runOnce(this::setL0, this));
-    new Trigger(() -> L1sensor.get()).onTrue(Commands.runOnce(this::setL1, this));
-    new Trigger(() -> L2sensor.get()).onTrue(Commands.runOnce(this::setL2, this));
-    new Trigger(() -> L3sensor.get()).onTrue(Commands.runOnce(this::setL3, this));
-    new Trigger(() -> L4sensor).onTrue(Commands.runOnce(this::setL4, this));
-
+    levelToTrigger[EleLevel.L0.ordinal()] = new Trigger(() -> L0sensor).onTrue(Commands.runOnce(this::setL0, this));
+    levelToTrigger[EleLevel.L1.ordinal()] = new Trigger(() -> L1sensor.get()).onTrue(Commands.runOnce(this::setL1, this));
+    levelToTrigger[EleLevel.L2.ordinal()] = new Trigger(() -> L2sensor.get()).onTrue(Commands.runOnce(this::setL2, this));
+    levelToTrigger[EleLevel.L3.ordinal()] = new Trigger(() -> L3sensor.get()).onTrue(Commands.runOnce(this::setL3, this));
+    levelToTrigger[EleLevel.L4.ordinal()] = new Trigger(() -> L4sensor).onTrue(Commands.runOnce(this::setL4, this));
+    
   }
 
   
@@ -73,51 +92,57 @@ public class Elevator extends SubsystemBase {
     leaderElevatorMotor.set(0);
   }
 
-  public void setL0() {
-    // TODO Auto-generated method stub
-    leaderElevatorMotor.getAlternateEncoder().setPosition(Constants.RobotConstants.L0Position);
+  public void setPosition(EleLevel level)
+  {
+    leaderElevatorMotor.getAlternateEncoder().setPosition(getDistanceFromLevel(level));
   }
 
-public void setL1() {
-    // TODO Auto-generated method stub
-    leaderElevatorMotor.getAlternateEncoder().setPosition(Constants.RobotConstants.L1Position);
-}
-
-public void setL2() {
-    // TODO Auto-generated method stub
-    leaderElevatorMotor.getAlternateEncoder().setPosition(Constants.RobotConstants.L2Position);
-}
-
-public void setL3() {
-    // TODO Auto-generated method stub
-    leaderElevatorMotor.getAlternateEncoder().setPosition(Constants.RobotConstants.L3Position);
-}
-
-public void setL4() {
-    // TODO Auto-generated method stub
-    leaderElevatorMotor.getAlternateEncoder().setPosition(Constants.RobotConstants.L4Position);
-}
-
-public boolean getSensor(double value){
-  if(value == 0){
-    return L0sensor;
-  }else if(value == 1){
-    return L1sensor.get();
-  }else if(value == 2){
-    return L2sensor.get();
-  }else if(value == 3){
-    return L3sensor.get();
-  }else if(value == 4){
-    return L4sensor;
-  }else{
-    return true;
+  public double getDistanceFromLevel(EleLevel level) {
+    return levelToDistance[level.ordinal()];
   }
+
+  public void moveUp(){
+    leaderElevatorMotor.set(0.2);
+  }
+  public void moveDown(){
+    leaderElevatorMotor.set(-0.2);
+  }
+
+
+  public void setL0(){
+    this.setPosition(EleLevel.L0);
+  }
+  public void setL1(){
+    this.setPosition(EleLevel.L1);
+  }
+  public void setL2(){
+    this.setPosition(EleLevel.L2);
+  }
+  public void setL3(){
+    this.setPosition(EleLevel.L3);
+  }
+  public void setL4(){
+    this.setPosition(EleLevel.L4);
+  }
+
+
+
+
+public boolean getSignalOfLevel(EleLevel level){
+ return levelToTrigger[level.ordinal()].getAsBoolean();
 }
 
 
 
 public double getPosition() {
   // TODO Auto-generated method stub
- return leaderElevatorMotor.getAlternateEncoder().getPosition();
+ return leaderElevatorMotor.getEncoder().getPosition();
 }
+
+
+
+
+
 }
+
+

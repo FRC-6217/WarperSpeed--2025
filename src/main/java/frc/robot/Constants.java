@@ -54,8 +54,8 @@ public final class Constants {
     //sparkmaxID
     public static final int algeaClawLeftMotorID = 33;
     public static final int algeaClawRightMotorID = 34;
-    public static final int elevatorLeftMotorID = 15;
-    public static final int elevatorRightMotorID = 16;
+    public static final int elevatorLeftMotorID = 7;
+    public static final int elevatorRightMotorID = 13;
     public static final int climberMotorID = 42;  
     public static final int intakeMotorID = 43;
     public static final int placerMoterID = 44;
@@ -90,9 +90,13 @@ public final class Constants {
     public static final double noteDetectorThreshold = 0.000326;
     public static final double feedforward = 0.011;
     public static final String Limelight4Name = "Limelight 4";
+
+    public static final double elevatorScalingFactor = 1;
+
     public static final int L1HallID = 0;
     public static final int L2HallID = 1;
     public static final int L3HallID = 2;
+
     public static final double L0Position = 0;
     public static final double L1Position = 1;
     public static final double L2Position = 2;
