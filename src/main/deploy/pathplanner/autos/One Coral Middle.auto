@@ -5,15 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Middle Start to Right Middle 2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle Start to Right Middle 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L1Elevator"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L1 Coral"
+            "name": "Place Coral"
           }
         }
       ]

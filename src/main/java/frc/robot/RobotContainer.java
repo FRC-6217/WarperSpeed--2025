@@ -24,6 +24,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
 
 import java.util.Map;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -76,6 +77,11 @@ public class RobotContainer {
     swerveDrivetrain.setDefaultCommand(new Drive(swerveDrivetrain, () -> -m_driverController.getLeftX(), () -> -m_driverController.getRightX(), () -> -m_driverController.getLeftY()));
 
     // path planner named commands
+    NamedCommands.registerCommand("L4Elevator", new ElevatorCommand(elevator, 4));
+    NamedCommands.registerCommand("L3Elevator", new ElevatorCommand(elevator, 3));
+    NamedCommands.registerCommand("L2Elevator", new ElevatorCommand(elevator, 2));
+    NamedCommands.registerCommand("L1Elevator", new ElevatorCommand(elevator, 1));
+    NamedCommands.registerCommand("L0Elevator", new ElevatorCommand(elevator, 0));
     //NamedCommands.registerCommand("autoFindNoteClockWise", autoFindNoteClockWiseCommand);
     //NamedCommands.registerCommand("autoFindNoteCounterClockWise", autoFindNoteCounterClockWiseCommand);
    // NamedCommands.registerCommand("autoSpeakerLineUp", new CameraDrive(swerveDrivetrain, shooterLimeLight, SemiAutoConstants.speaker, this.intake, this.firstBeamBreak));

@@ -90,6 +90,14 @@ public final class Constants {
     public static final double noteDetectorThreshold = 0.000326;
     public static final double feedforward = 0.011;
     public static final String Limelight4Name = "Limelight 4";
+    public static final int L1HallID = 0;
+    public static final int L2HallID = 1;
+    public static final int L3HallID = 2;
+    public static final double L0Position = 0;
+    public static final double L1Position = 1;
+    public static final double L2Position = 2;
+    public static final double L3Position = 3;
+    public static final double L4Position = 4;
   }
 
 

@@ -5,21 +5,47 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Bottom Start To Bottom Right Reef 1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Bottom Start To Bottom Right Reef 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Elevator"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4 Coral"
+            "name": "Place Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Bottom Right Reef 1 To Bottom Coral Station"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Bottom Right Reef 1 To Bottom Coral Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L0Elevator"
+                }
+              }
+            ]
           }
         },
         {
@@ -29,15 +55,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Bottom Coral Staion To Bottom Right Reef 2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Bottom Coral Staion To Bottom Right Reef 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Elevator"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4 Coral"
+            "name": "Place Coral"
           }
         }
       ]

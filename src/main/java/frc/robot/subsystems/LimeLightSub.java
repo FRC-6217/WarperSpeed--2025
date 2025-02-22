@@ -109,7 +109,7 @@ public class LimeLightSub extends SubsystemBase {
   }
 
   public void setPipeline(int id) {
-    NetworkTableInstance.getDefault().getTable(name).getEntry("pipeline").setNumber(id);
+    NetworkTableInstance.getDefault().getTable(name).getEntry("pipeline");
 
   }
 }
