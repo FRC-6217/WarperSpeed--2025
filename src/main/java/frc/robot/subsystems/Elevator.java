@@ -74,7 +74,7 @@ public class Elevator extends SubsystemBase {
     levelToTrigger[EleLevel.L1.ordinal()] = new Trigger(() -> L1sensor.get()).onTrue(Commands.runOnce(this::setL1, this));
     levelToTrigger[EleLevel.L2.ordinal()] = new Trigger(() -> L2sensor.get()).onTrue(Commands.runOnce(this::setL2, this));
     levelToTrigger[EleLevel.L3.ordinal()] = new Trigger(() -> L3sensor.get()).onTrue(Commands.runOnce(this::setL3, this));
-    levelToTrigger[EleLevel.L4.ordinal()] = new Trigger(() -> L4sensor).onTrue(Commands.runOnce(this::setL4, this));
+    levelToTrigger[EleLevel.L4.ordinal()] = new Trigger(() -> L4sensor).whileTrue(Commands.runOnce(this::setL4, this).alongWith(Commands.run(this::l4asLimit, this)));
     
   }
 
@@ -139,6 +139,11 @@ public double getPosition() {
  return leaderElevatorMotor.getEncoder().getPosition();
 }
 
+public void l4asLimit(){
+  if(leaderElevatorMotor.get() > 0){
+    leaderElevatorMotor.set(0);
+  }
+}
 
 
 

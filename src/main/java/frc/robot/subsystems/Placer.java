@@ -6,16 +6,27 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkMaxConfigAccessor;
 
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants;
 
 public class Placer extends SubsystemBase {
   SparkMax placer = new SparkMax(RobotConstants.placerMoterID, MotorType.kBrushless);
+  SparkMaxConfig placerConfig = new SparkMaxConfig();
   String uniqueID = "Placer Speed:";
+
   /** Creates a new Placer. */
-  public Placer() {}
+  public Placer() {
+    SmartDashboard.putNumber(uniqueID, 0);
+
+    placerConfig.limitSwitch.forwardLimitSwitchEnabled(false);
+
+      
+  }
 
   @Override
   public void periodic() {

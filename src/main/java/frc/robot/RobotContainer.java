@@ -103,7 +103,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    Trigger button0 = m_gameOperatorController.button(0);
     Trigger button1 = m_gameOperatorController.button(1);
     Trigger button2 = m_gameOperatorController.button(2);
     Trigger button3 = m_gameOperatorController.button(3);
@@ -144,12 +143,12 @@ public class RobotContainer {
   
     //gameOpB.whileTrue(new ClimberCommand(climber));
 
-    button0.whileTrue(Commands.runOnce(elevator::moveUp, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
+    button2.whileTrue(Commands.runOnce(elevator::moveUp, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
     button1.whileTrue(Commands.runOnce(elevator::moveDown, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
-    button8.whileTrue(Commands.runOnce(intake::forward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
-    button9.whileTrue(Commands.runOnce(placer::forward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
-    button12.whileTrue(Commands.runOnce(intake::backward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
-    button13.whileTrue(Commands.runOnce(placer::backward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
+    button9.whileTrue(Commands.runOnce(intake::forward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
+    button10.whileTrue(Commands.runOnce(placer::forward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
+    button13.whileTrue(Commands.runOnce(intake::backward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
+    button14.whileTrue(Commands.runOnce(placer::backward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
 
    
     //Driver Commands
