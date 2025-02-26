@@ -41,13 +41,13 @@ public final class Constants {
   public static class SemiAutoConstants{
     public static final PIDParameters translationPIDReefLeftPickUp = new PIDParameters(0.2, 0, 0, -18.42, .4);
     public static final PIDParameters rotationPIDReefLeftPickUp = new PIDParameters(0.0005, 0, 0, 0, 0.4);
-    public static final PIDParameters strafePIDReefLeftPickUp = new PIDParameters(0.01, 0, 0, 0, 1);
+    public static final PIDParameters strafePIDReefLeftPickUp = new PIDParameters(0.01, 0, 0, 0, .2);
 
     public static final SemiAutoParameters reefLeft = new SemiAutoParameters(TARGET.REEFLEFT, translationPIDReefLeftPickUp, rotationPIDReefLeftPickUp, strafePIDReefLeftPickUp, 1);
 
     public static final PIDParameters translationPIDReefRightPickUp = new PIDParameters(0.2, 0, 0, -18.42, .4);
     public static final PIDParameters rotationPIDReefRightPickUp = new PIDParameters(0.0005, 0, 0, 0, 0.4);
-    public static final PIDParameters strafePIDReefRightPickUp = new PIDParameters(0.01, 0, 0, 0, 1);
+    public static final PIDParameters strafePIDReefRightPickUp = new PIDParameters(0.01, 0, 0, 0, .2);
 
     public static final SemiAutoParameters reefRight = new SemiAutoParameters(TARGET.REEFRIGHT, translationPIDReefRightPickUp, rotationPIDReefRightPickUp, strafePIDReefRightPickUp, 1);
 
@@ -61,7 +61,7 @@ public final class Constants {
     public static final double steerGearRatio = 1.2;
     public static final double wheelDiameter = Units.inchesToMeters(4);
     public static final double driveSlewTimeInSecond = 0.06;
-    public static final double driveMaxVelo = (6000/60/steerGearRatio)*(wheelDiameter)*Math.PI;
+    public static final double driveMaxVelo = (6000/60/driveGearRatio)*(wheelDiameter)*Math.PI;
     public static final double rotationMaxAngleVelo = 1.5*Math.PI*driveMaxVelo;
     public static final int steerMotorCurrentLimit = 40;
     public static final int driveMotorCurrentLimit = 45;

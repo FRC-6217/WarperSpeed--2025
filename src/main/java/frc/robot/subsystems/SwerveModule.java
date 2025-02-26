@@ -16,6 +16,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -58,8 +60,8 @@ public class SwerveModule extends SubsystemBase{
     absEncoder = new BBCANEncoder(constants);
     
 
-    driveMotor.setNeutralMode(NeutralModeValue.Coast);
-    steerMotor.setNeutralMode(NeutralModeValue.Coast);
+    driveMotor.setNeutralMode(NeutralModeValue.Brake);
+    steerMotor.setNeutralMode(NeutralModeValue.Brake);
 
     SmartDashboard.putData(steerMotor);
 
@@ -130,10 +132,18 @@ public class SwerveModule extends SubsystemBase{
   }
   
   private void setSpeed(SwerveModuleState state){
-    driveSetpoint = state.speedMetersPerSecond;
+    driveSetpoint = state.speedMetersPerSecond/RobotConstants.driveMaxVelo;
     //SmartDashboard.putNumber(name+" Drive Setpoint ", driveSetpoint);
-      drivePID.withVelocity(driveSetpoint);
-      driveMotor.setControl(drivePID);
+      // drivePID.withVelocity(driveSetpoint);
+      // driveMotor.setControl(drivePID);
+       if(Math.abs(driveSetpoint) > .001){
+     //System.out.println(name  + ": " + MathUtil.clamp(driveSetpoint, -1, 1));
+     driveSetpoint = slewRate.calculate(driveSetpoint);
+      driveMotor.set(MathUtil.clamp(driveSetpoint, -1, 1));
+      //drivePID.setReference(driveSetpoint, ControlType.kVelocity);
+    } else{
+      driveMotor.set(0);
+    }
   }
 
   private void setAngle(SwerveModuleState state){
