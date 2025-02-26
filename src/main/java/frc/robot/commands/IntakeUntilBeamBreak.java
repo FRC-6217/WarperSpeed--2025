@@ -4,23 +4,22 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.RobotConstants;
-import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Placer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ClimberCommand extends Command {
-  /** Creates a new ClimberCommand. */
+public class IntakeUntilBeamBreak extends Command {
+  /** Creates a new IntakeUntilBeamBreak. */
+  Intake intake;
+  Placer placer;
 
-  public Climber climber;
-  private String uniqueClimberStringID = "Climber Speed";
+  public IntakeUntilBeamBreak(Intake intake, Placer placer) {
+    this.intake = intake;
+    this.placer = placer;
 
-  public ClimberCommand(Climber climber) {
+    addRequirements(intake,placer);
     // Use addRequirements() here to declare subsystem dependencies.
-    this.climber = climber;
-    addRequirements(climber);
-    SmartDashboard.putNumber(uniqueClimberStringID, 0);
   }
 
   // Called when the command is initially scheduled.
@@ -30,19 +29,20 @@ public class ClimberCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = SmartDashboard.getNumber(uniqueClimberStringID, RobotConstants.defaultClimberSpeed);
-    climber.setSpeed(speed);
+    intake.forward();
+    placer.forward();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climber.stop();
+    intake.stop();
+    placer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return placer.getBeamBreakBoolean();
   }
 }

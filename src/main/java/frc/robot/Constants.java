@@ -61,10 +61,10 @@ public final class Constants {
     public static final int placerMoterID = 44;
 
     //default speeds
-    public static final int defaultAlgaeClawSpeed = 0;
-    public static final int defaultClimberSpeed = 0;
-    public static final int defaultIntakeSpeed = 0;
-    public static final int defaultPlacerSpeed = 0;
+    public static final double defaultAlgaeClawSpeed = 0;
+    public static final double defaultClimberSpeed = 0;
+    public static final double defaultIntakeSpeed = -0.1;
+    public static final double defaultPlacerSpeed = 0.1;
 
     //Drive and steer PID
     public static final double drivePIDp = 0.55;

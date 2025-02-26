@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfigAccessor;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.RobotConstants;
 
 public class Placer extends SubsystemBase {
@@ -38,10 +39,10 @@ public class Placer extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   public void forward(){
-    placer.set(SmartDashboard.getNumber(uniqueID, 0));
+    placer.set(Constants.RobotConstants.defaultPlacerSpeed);
   }
   public void backward(){
-    placer.set(-SmartDashboard.getNumber(uniqueID, 0));
+    placer.set(Constants.RobotConstants.defaultPlacerSpeed);
   }
   public void stop(){
     placer.set(0);
@@ -51,5 +52,9 @@ public class Placer extends SubsystemBase {
 
     return placer.getForwardLimitSwitch();
 
+  }
+
+  public Boolean getBeamBreakBoolean(){
+    return getBeamBreak().equals(false);
   }
 }

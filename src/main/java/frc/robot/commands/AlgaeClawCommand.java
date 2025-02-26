@@ -18,6 +18,7 @@ public class AlgaeClawCommand extends Command {
   public AlgaeClawCommand(AlgaeClaw algaeClaw) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algaeClaw = algaeClaw;
+    addRequirements(algaeClaw);
     SmartDashboard.putNumber(uniqueIDString, 0);  
   }
 

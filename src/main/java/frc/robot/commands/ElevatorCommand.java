@@ -23,6 +23,7 @@ public class ElevatorCommand extends Command {
     this.elevator = elevator;
     this.level = level;
     SmartDashboard.putNumber(uniqueElevatorStringID, 0);
+    addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

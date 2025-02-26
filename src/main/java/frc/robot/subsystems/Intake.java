@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.RobotConstants;
 
 public class Intake extends SubsystemBase {
@@ -24,10 +25,10 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   public void forward(){
-    intakeMotor.set(SmartDashboard.getNumber(uniqueID, 0));
+    intakeMotor.set(Constants.RobotConstants.defaultIntakeSpeed);
   }
   public void backward(){
-    intakeMotor.set(-SmartDashboard.getNumber(uniqueID, 0));
+    intakeMotor.set(-Constants.RobotConstants.defaultIntakeSpeed);
   }
   public void stop(){
     intakeMotor.set(0);
