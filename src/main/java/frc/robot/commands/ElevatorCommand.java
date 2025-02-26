@@ -8,12 +8,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.EleLevel;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorCommand extends Command {
 
   public Elevator elevator;
   public double setpoint;
+  public double speed;
   public Elevator.EleLevel level;
   private String uniqueElevatorStringID = "Elevator Speed";
   /** Creates a new ElevatorCommand. */
@@ -28,19 +30,20 @@ public class ElevatorCommand extends Command {
   @Override
   public void initialize() {
     setpoint = elevator.getDistanceFromLevel(level);
+    if(setpoint < elevator.getPosition()){
+      speed = -.6;
+    }else if (setpoint > elevator.getPosition()){
+      speed = .6;
+    }else{
+      speed = 0;
+    }
   }
    
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(setpoint < elevator.getPosition()){
-      elevator.setSpeed(.2);
-    }else if (setpoint > elevator.getPosition()){
-      elevator.setSpeed(-0.2);
-    }else{
-      elevator.stop();
-    }
+    elevator.setSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.

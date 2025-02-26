@@ -17,11 +17,14 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
@@ -39,7 +42,7 @@ public class Elevator extends SubsystemBase {
     TOTAL,
   }
 
-  double[] levelToDistance = {RobotConstants.L0Position, RobotConstants.L1Position, RobotConstants.L2Position, RobotConstants.L3Position, RobotConstants.L4Position }; 
+  double[] levelToDistance = {RobotConstants.L0Position, RobotConstants.L1Position, RobotConstants.L2Position, RobotConstants.L3Position, RobotConstants.L4Position}; 
 
   Trigger[] levelToTrigger = new Trigger[EleLevel.TOTAL.ordinal()];
   
@@ -53,7 +56,7 @@ public class Elevator extends SubsystemBase {
   DigitalInput L2sensor = new DigitalInput(Constants.RobotConstants.L2HallID);
   DigitalInput L3sensor = new DigitalInput(Constants.RobotConstants.L3HallID);
   boolean L0sensor;
-  Boolean L4sensor;
+  DigitalInput L4sensor = new DigitalInput(Constants.RobotConstants.L4HallID);
 
 
   /** Creates a new Elevator. */
@@ -61,20 +64,28 @@ public class Elevator extends SubsystemBase {
     leaderElevatorConfig.idleMode(IdleMode.kBrake);
     leaderElevatorConfig.inverted(true);
     leaderElevatorConfig.encoder.positionConversionFactor(RobotConstants.elevatorScalingFactor);
+    leaderElevatorConfig.softLimit.apply(new SoftLimitConfig().forwardSoftLimit(Constants.RobotConstants.L4Position+.1));
     leaderElevatorMotor.configure(leaderElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
 
     followerElevatorConfig.idleMode(IdleMode.kBrake);
     followerElevatorConfig.follow(leaderElevatorMotor.getDeviceId(), true);
     followerElevatorMotor.configure(followerElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();
-    L4sensor = leaderElevatorMotor.getForwardLimitSwitch().isPressed();
+
 
     levelToTrigger[EleLevel.L0.ordinal()] = new Trigger(() -> L0sensor).onTrue(Commands.runOnce(this::setL0, this));
-    levelToTrigger[EleLevel.L1.ordinal()] = new Trigger(() -> L1sensor.get()).onTrue(Commands.runOnce(this::setL1, this));
-    levelToTrigger[EleLevel.L2.ordinal()] = new Trigger(() -> L2sensor.get()).onTrue(Commands.runOnce(this::setL2, this));
-    levelToTrigger[EleLevel.L3.ordinal()] = new Trigger(() -> L3sensor.get()).onTrue(Commands.runOnce(this::setL3, this));
-    levelToTrigger[EleLevel.L4.ordinal()] = new Trigger(() -> L4sensor).whileTrue(Commands.runOnce(this::setL4, this).alongWith(Commands.run(this::l4asLimit, this)));
+    levelToTrigger[EleLevel.L1.ordinal()] = new Trigger(() -> !L1sensor.get()).onTrue(Commands.runOnce(this::setL1, this));
+    levelToTrigger[EleLevel.L2.ordinal()] = new Trigger(() -> !L2sensor.get()).onTrue(Commands.runOnce(this::setL2, this));
+    levelToTrigger[EleLevel.L3.ordinal()] = new Trigger(() -> !L3sensor.get()).onTrue(Commands.runOnce(this::setL3, this));
+    levelToTrigger[EleLevel.L4.ordinal()] = new Trigger(() -> !L4sensor.get()).whileTrue(Commands.runOnce(this::setL4AndStop, this));
+
+
+
+    L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();
+    
+    
+   
     
   }
 
@@ -82,6 +93,15 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("L4 limit Switch", !L4sensor.get());
+    SmartDashboard.putBoolean("L0 limit Switch", L0sensor);
+    SmartDashboard.putBoolean("L1 limit Switch", !L1sensor.get());
+    SmartDashboard.putBoolean("L2 limit Switch", !L2sensor.get());
+    SmartDashboard.putBoolean("L3 limit Switch", !L3sensor.get());
+
+    SmartDashboard.putNumber("Elevator Position", getPosition());
+    L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();
+
     // This method will be called once per scheduler run
   }
 
@@ -94,7 +114,7 @@ public class Elevator extends SubsystemBase {
 
   public void setPosition(EleLevel level)
   {
-    leaderElevatorMotor.getAlternateEncoder().setPosition(getDistanceFromLevel(level));
+    leaderElevatorMotor.getEncoder().setPosition(getDistanceFromLevel(level));
   }
 
   public double getDistanceFromLevel(EleLevel level) {
@@ -126,6 +146,10 @@ public class Elevator extends SubsystemBase {
   }
 
 
+  public void setL4AndStop(){
+    this.setL4();
+    this.l4asLimit();
+  }
 
 
 public boolean getSignalOfLevel(EleLevel level){

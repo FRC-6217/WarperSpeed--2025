@@ -110,7 +110,7 @@ public class RobotContainer {
     Trigger button5 = m_gameOperatorController.button(5);
     Trigger button6 = m_gameOperatorController.button(6);
     Trigger button7 = m_gameOperatorController.button(7);
-    Trigger button8 = m_gameOperatorController.button(0);
+    Trigger button8 = m_gameOperatorController.button(8);
     Trigger button9 = m_gameOperatorController.button(9);
     Trigger button10 = m_gameOperatorController.button(10);
     Trigger button11 = m_gameOperatorController.button(11);
@@ -145,6 +145,10 @@ public class RobotContainer {
 
     button2.whileTrue(Commands.runOnce(elevator::moveUp, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
     button1.whileTrue(Commands.runOnce(elevator::moveDown, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
+    button6.onTrue(new ElevatorCommand(elevator, EleLevel.L2));
+    button7.onTrue(new ElevatorCommand(elevator, EleLevel.L3));
+    button8.onTrue(new ElevatorCommand(elevator, EleLevel.L4));
+    button5.onTrue(new ElevatorCommand(elevator, EleLevel.L0));
     button9.whileTrue(Commands.runOnce(intake::forward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
     button10.whileTrue(Commands.runOnce(placer::forward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
     button13.whileTrue(Commands.runOnce(intake::backward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
