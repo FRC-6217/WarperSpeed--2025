@@ -3,7 +3,83 @@
   "command": {
     "type": "sequential",
     "data": {
-      "commands": []
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Top Start To Top Right Reef 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Elevator"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Place Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Top Right Reef 2 To Top Coral Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L0Elevator"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Grab Coral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Top Coral Station To Top Left Reef 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Elevator"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Place Coral"
+          }
+        }
+      ]
     }
   },
   "resetOdom": true,

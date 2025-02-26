@@ -8,15 +8,20 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SemiAutoConstants;
 import frc.robot.commands.AlgaeClawCommand;
+import frc.robot.commands.CameraDrive;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeUntilBeamBreak;
+import frc.robot.commands.PlacerCommand;
 import frc.robot.commands.ResetDriveTrain;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.SemiAutoParameters;
 import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LimeLightSub;
 import frc.robot.subsystems.Placer;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.Elevator.EleLevel;
@@ -67,6 +72,7 @@ public class RobotContainer {
   public final String auto2Test = "New Auto";
   public final String auto3Test = "New New New Auto";
 
+  public final LimeLightSub reefLimeLight = new LimeLightSub("reef Limelight", 0);
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
@@ -82,6 +88,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2Elevator", new ElevatorCommand(elevator, EleLevel.L2));
     NamedCommands.registerCommand("L1Elevator", new ElevatorCommand(elevator, EleLevel.L1));
     NamedCommands.registerCommand("L0Elevator", new ElevatorCommand(elevator, EleLevel.L0));
+    
+    NamedCommands.registerCommand("ReefLeftAlign", new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefLeft));
+    NamedCommands.registerCommand("ReefRightAlign", new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefRight));
+
+    NamedCommands.registerCommand("Place Coral", new PlacerCommand(placer));
+    NamedCommands.registerCommand("Grab Coral", new IntakeUntilBeamBreak(intake, placer));
+
     //NamedCommands.registerCommand("autoFindNoteClockWise", autoFindNoteClockWiseCommand);
     //NamedCommands.registerCommand("autoFindNoteCounterClockWise", autoFindNoteCounterClockWiseCommand);
    // NamedCommands.registerCommand("autoSpeakerLineUp", new CameraDrive(swerveDrivetrain, shooterLimeLight, SemiAutoConstants.speaker, this.intake, this.firstBeamBreak));
@@ -124,8 +137,13 @@ public class RobotContainer {
     Trigger driverBackRight = m_driverController.button(Constants.OperatorConstants.kRightBackButton);
     Trigger driverLeftBumper = m_driverController.leftBumper();
     Trigger driverRightBumper = m_driverController.rightBumper();
+    Trigger driverA = m_driverController.a();
+    Trigger driverB = m_driverController.b();
+    Trigger driverX = m_driverController.x();
     Trigger driverY = m_driverController.y();
+
     Trigger driverOpPOVDown = m_driverController.povDown();
+    
 
     // Driver mapping
 
@@ -149,8 +167,8 @@ public class RobotContainer {
     button7.onTrue(new ElevatorCommand(elevator, EleLevel.L3));
     button8.onTrue(new ElevatorCommand(elevator, EleLevel.L4));
     button5.onTrue(new ElevatorCommand(elevator, EleLevel.L0));
-    button9.whileTrue(Commands.runOnce(intake::forward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
-    button10.whileTrue(Commands.runOnce(placer::forward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
+    button9.whileTrue(new IntakeUntilBeamBreak(intake, placer)).onFalse(Commands.runOnce(intake::stop, intake));
+    button10.whileTrue(new PlacerCommand(placer)).onFalse(Commands.runOnce(placer::stop, placer));
     button13.whileTrue(Commands.runOnce(intake::backward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
     button14.whileTrue(Commands.runOnce(placer::backward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
 
@@ -160,8 +178,8 @@ public class RobotContainer {
 
    // m_driverController.a().whileTrue(new AlgaeClawCommand(algaeClaw));
 
-    driverToggleFieldOriented.onTrue(Commands.runOnce(swerveDrivetrain::doRelative));
-    driverToggleFieldOriented.onFalse(Commands.runOnce(swerveDrivetrain::doAbsolute));
+    // driverToggleFieldOriented.onTrue(Commands.runOnce(swerveDrivetrain::doRelative));
+    // driverToggleFieldOriented.onFalse(Commands.runOnce(swerveDrivetrain::doAbsolute));
     
     resetDriverGyro.whileTrue(new ResetGyro(swerveDrivetrain));
     slowMode.onTrue(Commands.runOnce(swerveDrivetrain.governor::setSlowMode, swerveDrivetrain));
@@ -169,9 +187,8 @@ public class RobotContainer {
     reduceSpeed.onTrue(Commands.runOnce(swerveDrivetrain.governor::decrement, swerveDrivetrain));
     increaseSpeed.onTrue(Commands.runOnce(swerveDrivetrain.governor::increment, swerveDrivetrain));
 
-
-
-
+    driverX.onTrue(new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefLeft));
+    driverB.onTrue(new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefRight));
 
   }
 

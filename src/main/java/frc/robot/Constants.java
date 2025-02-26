@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.commands.SemiAutoParameters;
+import frc.robot.commands.SemiAutoParameters.PIDParameters;
+import frc.robot.commands.SemiAutoParameters.TARGET;
 import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.SwerveModule.Constants.encoderType;
 
@@ -35,7 +38,20 @@ public final class Constants {
 
    }
 
-  public static class SemiAutoConstants{}
+  public static class SemiAutoConstants{
+    public static final PIDParameters translationPIDReefLeftPickUp = new PIDParameters(0.2, 0, 0, -18.42, .4);
+    public static final PIDParameters rotationPIDReefLeftPickUp = new PIDParameters(0.0005, 0, 0, 0, 0.4);
+    public static final PIDParameters strafePIDReefLeftPickUp = new PIDParameters(0.01, 0, 0, 0, 1);
+
+    public static final SemiAutoParameters reefLeft = new SemiAutoParameters(TARGET.REEFLEFT, translationPIDReefLeftPickUp, rotationPIDReefLeftPickUp, strafePIDReefLeftPickUp, 1);
+
+    public static final PIDParameters translationPIDReefRightPickUp = new PIDParameters(0.2, 0, 0, -18.42, .4);
+    public static final PIDParameters rotationPIDReefRightPickUp = new PIDParameters(0.0005, 0, 0, 0, 0.4);
+    public static final PIDParameters strafePIDReefRightPickUp = new PIDParameters(0.01, 0, 0, 0, 1);
+
+    public static final SemiAutoParameters reefRight = new SemiAutoParameters(TARGET.REEFRIGHT, translationPIDReefRightPickUp, rotationPIDReefRightPickUp, strafePIDReefRightPickUp, 1);
+
+  }
 
 
   public static class RobotConstants{
