@@ -7,8 +7,12 @@ package frc.robot.subsystems;
 import java.lang.management.MemoryType;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -16,9 +20,15 @@ import frc.robot.Constants.RobotConstants;
 
 public class Intake extends SubsystemBase {
   SparkMax intakeMotor = new SparkMax(RobotConstants.intakeMotorID, MotorType.kBrushless);
+  SparkMaxConfig intakeConfig = new SparkMaxConfig();
+  DigitalInput intakeBeamBrake = new DigitalInput(Constants.RobotConstants.intakeBeamBreak);
   String uniqueID = "Intake Speed:";
   /** Creates a new Intake. */
-  public Intake() {}
+  public Intake() {
+
+    intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+  }
 
   @Override
   public void periodic() {
@@ -32,5 +42,9 @@ public class Intake extends SubsystemBase {
   }
   public void stop(){
     intakeMotor.set(0);
+  }
+
+  public DigitalInput getIntakeBeamBrake(){
+    return intakeBeamBrake;
   }
 }

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Placer;
 
@@ -13,11 +14,12 @@ public class IntakeUntilBeamBreak extends Command {
   /** Creates a new IntakeUntilBeamBreak. */
   Intake intake;
   Placer placer;
+  RobotContainer robotContainer;
 
-  public IntakeUntilBeamBreak(Intake intake, Placer placer) {
+  public IntakeUntilBeamBreak(Intake intake, Placer placer, RobotContainer robotContainer) {
     this.intake = intake;
     this.placer = placer;
-
+    this.robotContainer = robotContainer;
     addRequirements(intake,placer);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -29,13 +31,20 @@ public class IntakeUntilBeamBreak extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.forward();
-    placer.forward();
+    if(robotContainer.elevatorBottomLimitTrigger.getAsBoolean()){
+      intake.forward();
+      placer.forward();
+    }else{
+      intake.stop();
+      placer.stop();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+
+  
     intake.stop();
     placer.stop();
   }

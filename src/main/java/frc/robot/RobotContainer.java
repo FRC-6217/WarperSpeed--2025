@@ -67,6 +67,9 @@ public class RobotContainer {
   public final Intake intake = new Intake();
   public final Placer placer = new Placer();
 
+  public final Trigger intakeBeamBrakeTrigger = new Trigger(() -> intake.getIntakeBeamBrake().get());
+  public final Trigger elevatorBottomLimitTrigger = new Trigger(() -> elevator.getSignalOfLevel(EleLevel.L0));
+
   public SendableChooser<String> autoChooser = new SendableChooser<>();
   public final String autoTest = "newyork";
   public final String auto2Test = "New Auto";
@@ -83,17 +86,17 @@ public class RobotContainer {
     swerveDrivetrain.setDefaultCommand(new Drive(swerveDrivetrain, () -> -m_driverController.getLeftX(), () -> -m_driverController.getRightX(), () -> -m_driverController.getLeftY()));
 
     // path planner named commands
-    NamedCommands.registerCommand("L4Elevator", new ElevatorCommand(elevator, EleLevel.L4));
-    NamedCommands.registerCommand("L3Elevator", new ElevatorCommand(elevator, EleLevel.L3));
-    NamedCommands.registerCommand("L2Elevator", new ElevatorCommand(elevator, EleLevel.L2));
-    NamedCommands.registerCommand("L1Elevator", new ElevatorCommand(elevator, EleLevel.L1));
-    NamedCommands.registerCommand("L0Elevator", new ElevatorCommand(elevator, EleLevel.L0));
-    
+    NamedCommands.registerCommand("L4Elevator", new ElevatorCommand(elevator, EleLevel.L4, this));
+    NamedCommands.registerCommand("L3Elevator", new ElevatorCommand(elevator, EleLevel.L3, this));
+    NamedCommands.registerCommand("L2Elevator", new ElevatorCommand(elevator, EleLevel.L2, this));
+    NamedCommands.registerCommand("L1Elevator", new ElevatorCommand(elevator, EleLevel.L1, this));
+    NamedCommands.registerCommand("L0Elevator", new ElevatorCommand(elevator, EleLevel.L0, this));
+
     NamedCommands.registerCommand("ReefLeftAlign", new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefLeft));
     NamedCommands.registerCommand("ReefRightAlign", new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefRight));
 
     NamedCommands.registerCommand("Place Coral", new PlacerCommand(placer));
-    NamedCommands.registerCommand("Grab Coral", new IntakeUntilBeamBreak(intake, placer));
+    NamedCommands.registerCommand("Grab Coral", new IntakeUntilBeamBreak(intake, placer, this));
 
     //NamedCommands.registerCommand("autoFindNoteClockWise", autoFindNoteClockWiseCommand);
     //NamedCommands.registerCommand("autoFindNoteCounterClockWise", autoFindNoteCounterClockWiseCommand);
@@ -163,11 +166,11 @@ public class RobotContainer {
 
     button2.whileTrue(Commands.runOnce(elevator::moveUp, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
     button1.whileTrue(Commands.runOnce(elevator::moveDown, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
-    button6.onTrue(new ElevatorCommand(elevator, EleLevel.L2));
-    button7.onTrue(new ElevatorCommand(elevator, EleLevel.L3));
-    button8.onTrue(new ElevatorCommand(elevator, EleLevel.L4));
-    button5.onTrue(new ElevatorCommand(elevator, EleLevel.L0));
-    button9.whileTrue(new IntakeUntilBeamBreak(intake, placer)).onFalse(Commands.runOnce(intake::stop, intake));
+    button6.onTrue(new ElevatorCommand(elevator, EleLevel.L2, this));
+    button7.onTrue(new ElevatorCommand(elevator, EleLevel.L3, this));
+    button8.onTrue(new ElevatorCommand(elevator, EleLevel.L4, this));
+    button5.onTrue(new ElevatorCommand(elevator, EleLevel.L0, this));
+    button9.whileTrue(new IntakeUntilBeamBreak(intake, placer, this)).onFalse(Commands.runOnce(intake::stop, intake));
     button10.whileTrue(new PlacerCommand(placer)).onFalse(Commands.runOnce(placer::stop, placer));
     button13.whileTrue(Commands.runOnce(intake::backward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
     button14.whileTrue(Commands.runOnce(placer::backward, placer)).onFalse(Commands.runOnce(placer::stop, placer));

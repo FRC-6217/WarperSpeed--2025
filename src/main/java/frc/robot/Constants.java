@@ -113,12 +113,14 @@ public final class Constants {
     public static final int L2HallID = 7;
     public static final int L3HallID = 9;
     public static final int L4HallID = 8;
+    public static final int intakeBeamBreak = 1;
 
     public static final double L0Position = 7.75;
     public static final double L1Position = 0;
     public static final double L2Position = 32.75;
     public static final double L3Position = 47;
     public static final double L4Position = 71.5;
+    
    
   }
 

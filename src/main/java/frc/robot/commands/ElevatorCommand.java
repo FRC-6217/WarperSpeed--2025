@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.EleLevel;
 
@@ -16,12 +17,14 @@ public class ElevatorCommand extends Command {
   public Elevator elevator;
   public double setpoint;
   public double speed;
+  public RobotContainer robotContainer;
   public Elevator.EleLevel level;
   private String uniqueElevatorStringID = "Elevator Speed";
   /** Creates a new ElevatorCommand. */
-  public ElevatorCommand(Elevator elevator, Elevator.EleLevel level) {
+  public ElevatorCommand(Elevator elevator, Elevator.EleLevel level, RobotContainer robotContainer) {
     this.elevator = elevator;
     this.level = level;
+    this.robotContainer = robotContainer;
     SmartDashboard.putNumber(uniqueElevatorStringID, 0);
     addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -34,7 +37,11 @@ public class ElevatorCommand extends Command {
     if(setpoint < elevator.getPosition()){
       speed = -.6;
     }else if (setpoint > elevator.getPosition()){
-      speed = .6;
+      if(robotContainer.intakeBeamBrakeTrigger.getAsBoolean()){
+        speed = 0;
+      }else{
+        speed = .6;
+      }
     }else{
       speed = 0;
     }

@@ -8,10 +8,10 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3930000000000007,
-        "y": 1.948249999999999
+        "x": 3.969642857142857,
+        "y": 2.10360331632653
       },
-      "isLocked": true,
+      "isLocked": false,
       "linkedName": "Bottom Right Reef 1"
     },
     {
@@ -20,8 +20,8 @@
         "y": 1.111987704918032
       },
       "prevControl": {
-        "x": 3.145893442622951,
-        "y": 2.125987704918032
+        "x": 3.050800596328098,
+        "y": 2.0793383840941373
       },
       "nextControl": null,
       "isLocked": true,

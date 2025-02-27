@@ -42,7 +42,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   // public final Pigeon2 pigeon2 = new Pigeon2(50,"CTRSwerve");
    public final Pigeon2 pigeon2 = new Pigeon2(50, "SwerveCAN");
-  public SwerveDriveOdometry sOdometry;
+  public SwerveDrivePoseEstimator sOdometry;
   public SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   public SwerveDriveKinematics sKinematics;
   public SwerveModule[] modules;
@@ -101,7 +101,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     modules[frontRightModule.operationOrderID] = frontRightModule;
     modules[backLeftModule.operationOrderID] = backLeftModule;
     modules[backRightModule.operationOrderID] = backRightModule;
-    sOdometry = new SwerveDriveOdometry(sKinematics, getGyroRotation2d(), getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
+    sOdometry = new SwerveDrivePoseEstimator(sKinematics, getGyroRotation2d(), getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
     frontLeftModule.driveMotor.setPosition(0);
     frontRightModule.driveMotor.setPosition(0);
     backLeftModule.driveMotor.setPosition(0);
@@ -109,6 +109,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     cSpeeds.omegaRadiansPerSecond = 0;
     cSpeeds.vxMetersPerSecond = 0;
     cSpeeds.vyMetersPerSecond = 0;
+  
     
 
 
@@ -148,8 +149,10 @@ public class SwerveDrivetrain extends SubsystemBase {
     for(SwerveModule module : modules){
       module.initializeEncoder();
     }
+    
     //pigeon2.reset();
     sOdometry.resetPosition(getGyroRotation2d(), getModulePositions(), new Pose2d(0, 0, getGyroRotation2d()));
+    
   }
 
   private Rotation2d getGyroRotation2d(){
@@ -255,9 +258,9 @@ public class SwerveDrivetrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     sOdometry.update(getGyroRotation2d(), getModulePositions());
-    SmartDashboard.putNumber("Odometry X value", Units.metersToFeet(sOdometry.getPoseMeters().getX()));
-    SmartDashboard.putNumber("Odometry Y value", Units.metersToFeet(sOdometry.getPoseMeters().getY()));
-    SmartDashboard.putNumber("Odometry rotation", sOdometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putNumber("Odometry X value", Units.metersToFeet(sOdometry.getEstimatedPosition().getX()));
+    SmartDashboard.putNumber("Odometry Y value", Units.metersToFeet(sOdometry.getEstimatedPosition().getY()));
+    SmartDashboard.putNumber("Odometry rotation", sOdometry.getEstimatedPosition().getRotation().getDegrees());
    // SmartDashboard.putNumber("Gyro Angle", getGyroRotation2d().getDegrees());
    // SmartDashboard.putNumber("Pigeon getYaw Value: ", getAngle());
   
@@ -309,7 +312,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   // path planner functions
 
   public Pose2d getPose(){
-    return sOdometry.getPoseMeters();
+    return sOdometry.getEstimatedPosition();
   }
 
   public void resetPose(Pose2d pose){
