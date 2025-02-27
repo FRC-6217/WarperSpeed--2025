@@ -75,7 +75,7 @@ public class RobotContainer {
   public final String auto2Test = "New Auto";
   public final String auto3Test = "New New New Auto";
 
-  public final LimeLightSub reefLimeLight = new LimeLightSub("reef Limelight", 0);
+  public final LimeLightSub reefLimeLight = new LimeLightSub("Reef Limelight", 0);
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
