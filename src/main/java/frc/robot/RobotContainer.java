@@ -5,19 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.RobotConstants;
-import frc.robot.Constants.SemiAutoConstants;
-import frc.robot.commands.AlgaeClawCommand;
 import frc.robot.commands.CameraDrive;
-import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.IntakeUntilBeamBreak;
 import frc.robot.commands.PlacerCommand;
-import frc.robot.commands.ResetDriveTrain;
 import frc.robot.commands.ResetGyro;
-import frc.robot.commands.SemiAutoParameters;
-import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -26,26 +19,15 @@ import frc.robot.subsystems.Placer;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.Elevator.EleLevel;
 
-import java.util.Map;
-
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -63,11 +45,11 @@ public class RobotContainer {
   public final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(m_driverController);
   //public final AlgaeClaw algaeClaw = new AlgaeClaw( );
   public final Elevator elevator = new Elevator();
-  //public final Climber climber = new Climber();
+  public final Climber climber = new Climber();
   public final Intake intake = new Intake();
   public final Placer placer = new Placer();
 
-  public final Trigger intakeBeamBrakeTrigger = new Trigger(() -> intake.getIntakeBeamBrake().get());
+  public final Trigger intakeBeamBrakeTrigger = new Trigger(() -> !intake.getIntakeBeamBrake().get());
   public final Trigger elevatorBottomLimitTrigger = new Trigger(() -> elevator.getSignalOfLevel(EleLevel.L0));
 
   public SendableChooser<String> autoChooser = new SendableChooser<>();
@@ -146,8 +128,8 @@ public class RobotContainer {
     Trigger driverY = m_driverController.y();
 
     Trigger driverOpPOVDown = m_driverController.povDown();
-    
 
+    
     // Driver mapping
 
     Trigger driverToggleFieldOriented = driverY;
@@ -174,6 +156,11 @@ public class RobotContainer {
     button10.whileTrue(new PlacerCommand(placer)).onFalse(Commands.runOnce(placer::stop, placer));
     button13.whileTrue(Commands.runOnce(intake::backward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
     button14.whileTrue(Commands.runOnce(placer::backward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
+
+    driverOpPOVDown.whileTrue(Commands.runOnce(climber::reverse, climber)).onFalse(Commands.runOnce(climber::stop, climber));
+    m_driverController.povUp().whileTrue(Commands.runOnce(climber::forward, climber)).onFalse(Commands.runOnce(climber::stop, climber));
+    
+
 
    
     //Driver Commands

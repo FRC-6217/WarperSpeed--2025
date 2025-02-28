@@ -36,6 +36,7 @@ public class Placer extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("placer beambreak", getBeamBreakBoolean());
     // This method will be called once per scheduler run
   }
   public void forward(){
@@ -55,6 +56,6 @@ public class Placer extends SubsystemBase {
   }
 
   public Boolean getBeamBreakBoolean(){
-    return getBeamBreak().equals(false);
+    return getBeamBreak().isPressed();
   }
 }

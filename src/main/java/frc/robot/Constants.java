@@ -72,15 +72,15 @@ public final class Constants {
     public static final int algeaClawRightMotorID = 34;
     public static final int elevatorLeftMotorID = 7;
     public static final int elevatorRightMotorID = 13;
-    public static final int climberMotorID = 42;  
+    public static final int climberMotorID = 12;  
     public static final int intakeMotorID = 43;
     public static final int placerMoterID = 44;
 
     //default speeds
     public static final double defaultAlgaeClawSpeed = 0;
     public static final double defaultClimberSpeed = 0;
-    public static final double defaultIntakeSpeed = -0.1;
-    public static final double defaultPlacerSpeed = 0.1;
+    public static final double defaultIntakeSpeed = -0.40;
+    public static final double defaultPlacerSpeed = -0.2;
 
     //Drive and steer PID
     public static final double drivePIDp = 0.55;

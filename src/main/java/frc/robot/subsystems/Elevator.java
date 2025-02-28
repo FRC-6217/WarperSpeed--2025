@@ -44,7 +44,7 @@ public class Elevator extends SubsystemBase {
 
   double[] levelToDistance = {RobotConstants.L0Position, RobotConstants.L1Position, RobotConstants.L2Position, RobotConstants.L3Position, RobotConstants.L4Position}; 
 
-  Trigger[] levelToTrigger = new Trigger[EleLevel.TOTAL.ordinal()];
+  Boolean[] levelToBooleans = new Boolean[EleLevel.TOTAL.ordinal()];
   
 
 
@@ -74,11 +74,6 @@ public class Elevator extends SubsystemBase {
 
 
 
-    levelToTrigger[EleLevel.L0.ordinal()] = new Trigger(() -> L0sensor).onTrue(Commands.runOnce(this::setL0, this));
-    levelToTrigger[EleLevel.L1.ordinal()] = new Trigger(() -> !L1sensor.get()).onTrue(Commands.runOnce(this::setL1, this));
-    levelToTrigger[EleLevel.L2.ordinal()] = new Trigger(() -> !L2sensor.get()).onTrue(Commands.runOnce(this::setL2, this));
-    levelToTrigger[EleLevel.L3.ordinal()] = new Trigger(() -> !L3sensor.get()).onTrue(Commands.runOnce(this::setL3, this));
-    levelToTrigger[EleLevel.L4.ordinal()] = new Trigger(() -> !L4sensor.get()).whileTrue(Commands.runOnce(this::setL4AndStop, this));
 
 
 
@@ -98,6 +93,26 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("L1 limit Switch", !L1sensor.get());
     SmartDashboard.putBoolean("L2 limit Switch", !L2sensor.get());
     SmartDashboard.putBoolean("L3 limit Switch", !L3sensor.get());
+
+    if(L0sensor){
+      setL0();
+    }else if(!L1sensor.get()){
+      setL1();
+    }else if(!L2sensor.get()){
+      setL2();
+    }else if(!L3sensor.get()){
+      setL3();
+    }else if(!L4sensor.get()){
+      setL4AndStop();
+    }
+
+    
+    levelToBooleans[EleLevel.L0.ordinal()] = L0sensor;
+    levelToBooleans[EleLevel.L1.ordinal()] = !L1sensor.get();
+    levelToBooleans[EleLevel.L2.ordinal()] = !L2sensor.get();
+    levelToBooleans[EleLevel.L3.ordinal()] = !L3sensor.get();
+    levelToBooleans[EleLevel.L4.ordinal()] = !L4sensor.get();
+
 
     SmartDashboard.putNumber("Elevator Position", getPosition());
     L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();
@@ -122,10 +137,10 @@ public class Elevator extends SubsystemBase {
   }
 
   public void moveUp(){
-    leaderElevatorMotor.set(0.2);
+    leaderElevatorMotor.set(0.);
   }
   public void moveDown(){
-    leaderElevatorMotor.set(-0.2);
+    leaderElevatorMotor.set(-0.4);
   }
 
 
@@ -153,7 +168,7 @@ public class Elevator extends SubsystemBase {
 
 
 public boolean getSignalOfLevel(EleLevel level){
- return levelToTrigger[level.ordinal()].getAsBoolean();
+ return levelToBooleans[level.ordinal()];
 }
 
 

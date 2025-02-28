@@ -5,16 +5,22 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotConstants;
 
 public class Climber extends SubsystemBase {
 
-  TalonFX climberMotor = new TalonFX(RobotConstants.climberMotorID);
+  SparkMax climberMotor = new SparkMax(RobotConstants.climberMotorID, MotorType.kBrushless);
 
   /** Creates a new Climber. */
-  public Climber() {}
+  public Climber() {
+    SmartDashboard.putNumber("climber speed",.2);
+
+  }
 
   @Override
   public void periodic() {
@@ -25,5 +31,12 @@ public class Climber extends SubsystemBase {
   }
   public void stop(){
     climberMotor.set(0);
+  }
+
+  public void forward() {
+    climberMotor.set(-.2);
+  }
+  public void reverse(){
+    climberMotor.set(.2);
   }
 }
