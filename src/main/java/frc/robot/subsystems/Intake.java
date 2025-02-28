@@ -23,6 +23,7 @@ public class Intake extends SubsystemBase {
   SparkMaxConfig intakeConfig = new SparkMaxConfig();
   DigitalInput intakeBeamBrake = new DigitalInput(Constants.RobotConstants.intakeBeamBreak);
   String uniqueID = "Intake Speed:";
+  int counter = 0;
   /** Creates a new Intake. */
   public Intake() {
 
@@ -33,6 +34,11 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (counter++ == 10) {
+      System.out.println(    intakeMotor.getOutputCurrent());
+      counter = 0;
+    }
+
   }
   public void forward(){
     intakeMotor.set(Constants.RobotConstants.defaultIntakeSpeed);

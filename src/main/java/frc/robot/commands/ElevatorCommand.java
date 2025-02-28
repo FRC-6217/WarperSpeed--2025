@@ -33,14 +33,15 @@ public class ElevatorCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.err.println(level + " Starting");
     setpoint = elevator.getDistanceFromLevel(level);
     if(setpoint < elevator.getPosition()){
-      speed = -.6;
+      speed = -.7;
     }else if (setpoint > elevator.getPosition()){
       if(robotContainer.intakeBeamBrakeTrigger.getAsBoolean()){
         speed = 0;
       }else{
-        speed = .6;
+        speed = .7;
       }
     }else{
       speed = 0;
@@ -52,17 +53,23 @@ public class ElevatorCommand extends Command {
   @Override
   public void execute() {
     elevator.setSpeed(speed);
+    System.out.println(elevator.getSignalOfLevel(level));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     elevator.stop();
+    System.out.println(elevator.getSignalOfLevel(level));
+    System.out.println(level + " Ending");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+  
+    
     return elevator.getSignalOfLevel(level);
+   
   }
 }
