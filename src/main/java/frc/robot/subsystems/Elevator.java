@@ -48,8 +48,8 @@ public class Elevator extends SubsystemBase {
   
 
 
-  SparkMax followerElevatorMotor = new SparkMax(RobotConstants.elevatorLeftMotorID, MotorType.kBrushless);
-  SparkMax leaderElevatorMotor = new SparkMax(RobotConstants.elevatorRightMotorID, MotorType.kBrushless);
+  public SparkMax followerElevatorMotor = new SparkMax(RobotConstants.elevatorLeftMotorID, MotorType.kBrushless);
+  public SparkMax leaderElevatorMotor = new SparkMax(RobotConstants.elevatorRightMotorID, MotorType.kBrushless);
   SparkMaxConfig followerElevatorConfig = new SparkMaxConfig();
   SparkMaxConfig leaderElevatorConfig = new SparkMaxConfig();
   DigitalInput L1sensor = new DigitalInput(Constants.RobotConstants.L1HallID);
@@ -137,7 +137,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void moveUp(){
-    leaderElevatorMotor.set(0.);
+    leaderElevatorMotor.set(0.4);
   }
   public void moveDown(){
     leaderElevatorMotor.set(-0.4);

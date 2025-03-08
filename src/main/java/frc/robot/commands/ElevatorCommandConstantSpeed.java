@@ -8,20 +8,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.EleLevel;
+import frc.robot.Constants.RobotConstants;
+import frc.robot.subsystems.ElevatorNoHalls;
+import frc.robot.subsystems.ElevatorNoHalls.EleLevel;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorCommand extends Command {
+public class ElevatorCommandConstantSpeed extends Command {
 
-  public Elevator elevator;
+  public ElevatorNoHalls elevator;
   public double setpoint;
   public double speed;
   public RobotContainer robotContainer;
-  public Elevator.EleLevel level;
+  public ElevatorNoHalls.EleLevel level;
   private String uniqueElevatorStringID = "Elevator Speed";
   /** Creates a new ElevatorCommand. */
-  public ElevatorCommand(Elevator elevator, Elevator.EleLevel level, RobotContainer robotContainer) {
+  public ElevatorCommandConstantSpeed(ElevatorNoHalls elevator, ElevatorNoHalls.EleLevel level, RobotContainer robotContainer) {
     this.elevator = elevator;
     this.level = level;
     this.robotContainer = robotContainer;
@@ -35,13 +36,13 @@ public class ElevatorCommand extends Command {
   public void initialize() {
     System.err.println(level + " Starting");
     setpoint = elevator.getDistanceFromLevel(level);
-    if(setpoint < elevator.getPosition()){
-      speed = -.7;
+    if(setpoint < elevator.getPosition()){ 
+      speed = RobotConstants.elevatorConstantSpeedDown;
     }else if (setpoint > elevator.getPosition()){
       if(robotContainer.intakeBeamBrakeTrigger.getAsBoolean()){
         speed = 0;
       }else{
-        speed = .7;
+        speed = RobotConstants.elevatorConstantSpeedUp;
       }
     }else{
       speed = 0;
@@ -53,23 +54,19 @@ public class ElevatorCommand extends Command {
   @Override
   public void execute() {
     elevator.setSpeed(speed);
-    System.out.println(elevator.getSignalOfLevel(level));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     elevator.stop();
-    System.out.println(elevator.getSignalOfLevel(level));
-    System.out.println(level + " Ending");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-  
-    
-    return elevator.getSignalOfLevel(level);
+   // return elevator.getSignalOfLevel(level);
+   return true;
    
   }
 }

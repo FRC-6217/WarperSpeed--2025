@@ -5,19 +5,21 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoLeaveLine;
 import frc.robot.commands.CameraDrive;
 import frc.robot.commands.Drive;
-import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.IntakeUntilBeamBreak;
+import frc.robot.commands.PIDElevatorCommand;
 import frc.robot.commands.PlacerCommand;
 import frc.robot.commands.ResetGyro;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.EleLevel;
+import frc.robot.subsystems.ElevatorNoHalls;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLightSub;
 import frc.robot.subsystems.Placer;
 import frc.robot.subsystems.SwerveDrivetrain;
-import frc.robot.subsystems.Elevator.EleLevel;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -52,12 +55,12 @@ public class RobotContainer {
   public final Trigger intakeBeamBrakeTrigger = new Trigger(() -> !intake.getIntakeBeamBrake().get());
   public final Trigger elevatorBottomLimitTrigger = new Trigger(() -> elevator.getSignalOfLevel(EleLevel.L0));
 
-  public SendableChooser<String> autoChooser = new SendableChooser<>();
+  public SendableChooser<Command> autoChooser = new SendableChooser<>();
   public final String autoTest = "newyork";
   public final String auto2Test = "New Auto";
   public final String auto3Test = "New New New Auto";
 
-  public final LimeLightSub reefLimeLight = new LimeLightSub("Reef Limelight", 0);
+  public final LimeLightSub reefLimeLight = new LimeLightSub("reef", 0);
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
@@ -68,11 +71,13 @@ public class RobotContainer {
     swerveDrivetrain.setDefaultCommand(new Drive(swerveDrivetrain, () -> -m_driverController.getLeftX(), () -> -m_driverController.getRightX(), () -> -m_driverController.getLeftY()));
 
     // path planner named commands
+    /* 
     NamedCommands.registerCommand("L4Elevator", new ElevatorCommand(elevator, EleLevel.L4, this));
     NamedCommands.registerCommand("L3Elevator", new ElevatorCommand(elevator, EleLevel.L3, this));
     NamedCommands.registerCommand("L2Elevator", new ElevatorCommand(elevator, EleLevel.L2, this));
     NamedCommands.registerCommand("L1Elevator", new ElevatorCommand(elevator, EleLevel.L1, this));
     NamedCommands.registerCommand("L0Elevator", new ElevatorCommand(elevator, EleLevel.L0, this));
+    */
 
     NamedCommands.registerCommand("ReefLeftAlign", new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefLeft));
     NamedCommands.registerCommand("ReefRightAlign", new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefRight));
@@ -84,9 +89,11 @@ public class RobotContainer {
     //NamedCommands.registerCommand("autoFindNoteCounterClockWise", autoFindNoteCounterClockWiseCommand);
    // NamedCommands.registerCommand("autoSpeakerLineUp", new CameraDrive(swerveDrivetrain, shooterLimeLight, SemiAutoConstants.speaker, this.intake, this.firstBeamBreak));
   
-   autoChooser.setDefaultOption(autoTest, autoTest); 
-   autoChooser.addOption(auto2Test, auto2Test);
-   autoChooser.addOption(auto3Test, auto3Test);
+   autoChooser.setDefaultOption("Move ten feet", this.driveTenFeetThenStop()); 
+   autoChooser.addOption("Do nothing", this.doNothing());
+   autoChooser.addOption("Move ten feet then score L4", this.deadReckonL4());
+   autoChooser.addOption("Move ten feet then score L3", this.deadReckonL3());
+   autoChooser.addOption("Move ten feet then score L2", this.deadReckonL2());
    SmartDashboard.putData(autoChooser);
   }
 
@@ -139,6 +146,7 @@ public class RobotContainer {
     Trigger fastMode = driverRightBumper;
     Trigger reduceSpeed = m_driverController.axisGreaterThan(Constants.OperatorConstants.leftTriggerAxis,.6);
     Trigger increaseSpeed = m_driverController.axisGreaterThan(Constants.OperatorConstants.rightTriggerAxis,.6);
+    driverA.whileTrue(new PlacerCommand(placer)).onFalse(Commands.runOnce(placer::stop, placer));
 
 
 
@@ -148,12 +156,11 @@ public class RobotContainer {
 
     button2.whileTrue(Commands.runOnce(elevator::moveUp, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
     button1.whileTrue(Commands.runOnce(elevator::moveDown, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
-    button6.onTrue(new ElevatorCommand(elevator, EleLevel.L2, this));
-    button7.onTrue(new ElevatorCommand(elevator, EleLevel.L3, this));
-    button8.onTrue(new ElevatorCommand(elevator, EleLevel.L4, this));
-    button5.onTrue(new ElevatorCommand(elevator, EleLevel.L0, this));
+    button6.onTrue(new PIDElevatorCommand(elevator, EleLevel.L2, this));
+    button7.onTrue(new PIDElevatorCommand(elevator, EleLevel.L3, this));
+    button8.onTrue(new PIDElevatorCommand(elevator, EleLevel.L4, this));
+    button5.onTrue(new PIDElevatorCommand(elevator, EleLevel.L0, this));
     button9.whileTrue(new IntakeUntilBeamBreak(intake, placer, this)).onFalse(Commands.runOnce(intake::stop, intake));
-    button10.whileTrue(new PlacerCommand(placer)).onFalse(Commands.runOnce(placer::stop, placer));
     button13.whileTrue(Commands.runOnce(intake::backward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
     button14.whileTrue(Commands.runOnce(placer::backward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
 
@@ -183,10 +190,32 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-   
-    PathPlannerAuto auto = new PathPlannerAuto(autoChooser.getSelected());
-    SmartDashboard.putString("Auto Selected", autoChooser.getSelected());
-    return auto;
+    Command auto = new AutoLeaveLine(swerveDrivetrain);
+    //PathPlannerAuto auto = new PathPlannerAuto(autoChooser.getSelected());
+    //SmartDashboard.putString("Auto Selected", autoChooser.getSelected());
+    //return autoChooser.getSelected(); 
+    //return auto.andThen(Commands.runOnce(swerveDrivetrain::stop));
+   return auto.andThen(new IntakeUntilBeamBreak(intake, placer, this)).andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L4, this)).andThen(Commands.waitSeconds(.5));
+
+  }
+  public Command driveTenFeetThenStop(){
+    Command auto = new AutoLeaveLine(swerveDrivetrain);
+    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain));
+  }
+  public Command deadReckonL4(){
+    Command auto = new AutoLeaveLine(swerveDrivetrain);
+    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L4, this)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, EleLevel.L0, this));
+  }
+  public Command deadReckonL3(){
+    Command auto = new AutoLeaveLine(swerveDrivetrain);
+    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L3, this)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, EleLevel.L0, this));
+  }
+  public Command deadReckonL2(){
+    Command auto = new AutoLeaveLine(swerveDrivetrain);
+    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L2, this)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, EleLevel.L0, this));
+  }
+  public Command doNothing(){
+    return new PrintCommand("Nothing");
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

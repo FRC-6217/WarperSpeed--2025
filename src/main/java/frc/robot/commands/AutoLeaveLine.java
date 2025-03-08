@@ -23,22 +23,24 @@ public class AutoLeaveLine extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+  swerveDrivetrain.setPigeonAngle(180);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    swerveDrivetrain.drive(new Translation2d(-.3, 0), 0);
+    swerveDrivetrain.drive(new Translation2d(-1, 0), 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    swerveDrivetrain.drive(new Translation2d(0,0), 0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return swerveDrivetrain.sOdometry.getEstimatedPosition().getX() <= -1.701;
+    return swerveDrivetrain.sOdometry.getEstimatedPosition().getX() <= -1.1;
   }
 }

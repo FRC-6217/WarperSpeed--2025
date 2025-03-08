@@ -86,7 +86,7 @@ public class SwerveModule extends SubsystemBase{
    
     driveConfigs = driveConfigs.withKA(0).withKD(RobotConstants.drivePIDd).withKG(0).withKI(RobotConstants.drivePIDi).withKP(RobotConstants.drivePIDp).withKS(0).withKV(0);
     driveMotor.getConfigurator().apply(driveConfigs);
-    driveMotor.getConfigurator().apply(new FeedbackConfigs().withSensorToMechanismRatio(6.12).withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor));
+    driveMotor.getConfigurator().apply(new FeedbackConfigs().withSensorToMechanismRatio(RobotConstants.driveGearRatio).withFeedbackSensorSource(FeedbackSensorSourceValue.RotorSensor));
     driveMotor.getConfigurator().apply(driveRamp);
     driveMotor.getConfigurator().apply(new MotorOutputConfigs().withDutyCycleNeutralDeadband(.03).withInverted(InvertedValue.Clockwise_Positive));
     driveMotor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(RobotConstants.driveMotorCurrentLimit).withSupplyCurrentLimitEnable(true));

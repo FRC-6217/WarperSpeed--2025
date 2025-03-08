@@ -57,7 +57,7 @@ public final class Constants {
   public static class RobotConstants{
     public static final double trackWidth = Units.inchesToMeters(24.5);
     public static final double trackLength = Units.inchesToMeters(24.5);
-    public static final double driveGearRatio = 6.12;
+    public static final double driveGearRatio = 8.14;
     public static final double steerGearRatio = 1.2;
     public static final double wheelDiameter = Units.inchesToMeters(4);
     public static final double driveSlewTimeInSecond = 0.06;
@@ -80,7 +80,7 @@ public final class Constants {
     public static final double defaultAlgaeClawSpeed = 0;
     public static final double defaultClimberSpeed = 0;
     public static final double defaultIntakeSpeed = -0.40;
-    public static final double defaultPlacerSpeed = -0.2;
+    public static final double defaultPlacerSpeed = 0.2;
 
     //Drive and steer PID
     public static final double drivePIDp = 0.55;
@@ -110,9 +110,9 @@ public final class Constants {
     public static final double elevatorScalingFactor = 0.186144;
 
     public static final int L1HallID = 6;
-    public static final int L2HallID = 7;
-    public static final int L3HallID = 9;
-    public static final int L4HallID = 8;
+    public static final int L2HallID = 4;
+    public static final int L3HallID = 3;
+    public static final int L4HallID = 5;
     public static final int intakeBeamBreak = 1;
 
     public static final double L0Position = 7.75;
@@ -120,6 +120,8 @@ public final class Constants {
     public static final double L2Position = 32.75;
     public static final double L3Position = 47;
     public static final double L4Position = 71.5;
+    public static double elevatorConstantSpeedDown = -0.7;
+    public static double elevatorConstantSpeedUp = 0.7;
     
    
   }
