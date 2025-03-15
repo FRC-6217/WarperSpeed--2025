@@ -151,7 +151,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
     
     //pigeon2.reset();
-    sOdometry.resetPosition(getGyroRotation2d(), getModulePositions(), new Pose2d(0, 0, getGyroRotation2d()));
+    //sOdometry.resetPosition(getGyroRotation2d(), getModulePositions(), new Pose2d(0, 0, getGyroRotation2d()));
     
   }
 
