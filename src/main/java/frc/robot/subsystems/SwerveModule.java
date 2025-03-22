@@ -105,7 +105,7 @@ public class SwerveModule extends SubsystemBase{
   public void initializeEncoder(){
     //set the absolute encoder value to the relative motor encoder
     steerMotor.setPosition(absEncoder.getAngle().getRotations());
-    driveMotor.setPosition(0);
+   // driveMotor.setPosition(0);
   }
 
 

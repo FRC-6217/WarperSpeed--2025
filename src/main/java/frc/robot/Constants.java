@@ -97,10 +97,10 @@ public final class Constants {
     // Competition Robot
 
     //bevel gear on wheel goes rig
-    public static final SwerveModule.Constants frontLeft = new SwerveModule.Constants(0, 11, 12, 32, 0.081787, "Front Left", encoderType.CAN, "CTRSwerve");
-    public static final SwerveModule.Constants frontRight = new SwerveModule.Constants(1, 8, 9, 31, -0.280562, "Front Right", encoderType.CAN,"CTRSwerve");
-    public static final SwerveModule.Constants backLeft = new SwerveModule.Constants(2, 18, 19, 33, 0.151611, "Back Left", encoderType.CAN, "CTRSwerve");
-    public static final SwerveModule.Constants backRight = new SwerveModule.Constants(3, 20, 21, 34, 0.303467, "Back Right", encoderType.CAN,"CTRSwerve");
+    public static final SwerveModule.Constants frontLeft = new SwerveModule.Constants(0, 18, 19, 33, -0.105713, "Front Left", encoderType.CAN, "CTRSwerve");
+    public static final SwerveModule.Constants frontRight = new SwerveModule.Constants(1, 11, 12, 32, -0.165039, "Front Right", encoderType.CAN, "CTRSwerve");
+    public static final SwerveModule.Constants backLeft = new SwerveModule.Constants(2, 20, 21, 34, 0.072021, "Back Left", encoderType.CAN,"CTRSwerve");
+    public static final SwerveModule.Constants backRight = new SwerveModule.Constants(3, 8, 9, 31, 0.459473, "Back Right", encoderType.CAN,"CTRSwerve");
     public static final double laserNoteThresholdInches = 7.3;
     public static final double indexerStartOffset = .0887;
     public static final double noteDetectorThreshold = 0.000326;

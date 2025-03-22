@@ -69,18 +69,10 @@ public class Elevator extends SubsystemBase {
     
 
     followerElevatorConfig.idleMode(IdleMode.kBrake);
-    followerElevatorConfig.follow(leaderElevatorMotor.getDeviceId(), true);
+    followerElevatorConfig.follow(leaderElevatorMotor.getDeviceId(), false);
     followerElevatorMotor.configure(followerElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-
-
-
-
-
-    L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();
-    
-    
-   
+    L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();  
     
   }
 

@@ -44,8 +44,9 @@ public class RobotContainer {
 
   private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
   private final CommandGenericHID m_gameOperatorController = new CommandGenericHID(OperatorConstants.kOperatorControllerPort);
+  public Robot robot = new Robot();
  
-  public final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(m_driverController);
+  public final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(m_driverController, robot);
   //public final AlgaeClaw algaeClaw = new AlgaeClaw( );
   public final Elevator elevator = new Elevator();
   public final Climber climber = new Climber();
@@ -89,11 +90,13 @@ public class RobotContainer {
     //NamedCommands.registerCommand("autoFindNoteCounterClockWise", autoFindNoteCounterClockWiseCommand);
    // NamedCommands.registerCommand("autoSpeakerLineUp", new CameraDrive(swerveDrivetrain, shooterLimeLight, SemiAutoConstants.speaker, this.intake, this.firstBeamBreak));
   
-   autoChooser.setDefaultOption("Move ten feet", this.driveTenFeetThenStop()); 
-   autoChooser.addOption("Do nothing", this.doNothing());
-   autoChooser.addOption("Move ten feet then score L4", this.deadReckonL4());
-   autoChooser.addOption("Move ten feet then score L3", this.deadReckonL3());
-   autoChooser.addOption("Move ten feet then score L2", this.deadReckonL2());
+   
+   autoChooser.setDefaultOption("Do Nothing", new PathPlannerAuto("Do Nothing"));
+   autoChooser.addOption("One Coral Middle", new PathPlannerAuto("One Coral Middle"));
+   autoChooser.addOption("Bottom Right 2 Coral Auto", new PathPlannerAuto("Bottom Right 2 Coral Auto"));
+   autoChooser.addOption("Top Right 2 Coral Auto", new PathPlannerAuto("Top Right 2 Coral Auto"));
+   autoChooser.addOption("3 Coral Top Auto", new PathPlannerAuto("3 Coral Top Auto"));
+   autoChooser.addOption("3 Coral Bottom Auto", new PathPlannerAuto("3 Coral Bottom Auto"));
    SmartDashboard.putData(autoChooser);
   }
 
@@ -190,12 +193,12 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    Command auto = new AutoLeaveLine(swerveDrivetrain);
+    //Command auto = new AutoLeaveLine(swerveDrivetrain);
     //PathPlannerAuto auto = new PathPlannerAuto(autoChooser.getSelected());
     //SmartDashboard.putString("Auto Selected", autoChooser.getSelected());
-    //return autoChooser.getSelected(); 
+    return autoChooser.getSelected(); 
     //return auto.andThen(Commands.runOnce(swerveDrivetrain::stop));
-   return auto.andThen(new IntakeUntilBeamBreak(intake, placer, this)).andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L4, this)).andThen(Commands.waitSeconds(.5));
+   //return auto.andThen(new IntakeUntilBeamBreak(intake, placer, this)).andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L4, this)).andThen(Commands.waitSeconds(.5));
 
   }
   public Command driveTenFeetThenStop(){

@@ -14,6 +14,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,11 +26,14 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
+import frc.robot.Robot;
 
 
 public class SwerveDrivetrain extends SubsystemBase {
@@ -60,10 +64,15 @@ public class SwerveDrivetrain extends SubsystemBase {
   public boolean isAbsolute = true;
 
   public Governor governor = new Governor();
+
+   public Field2d fieldWithVision = new Field2d();
+  public final String frontLimeLight = "limelight-reef";
+  public Robot robot;
  
-  public SwerveDrivetrain(CommandXboxController cx) {
+  public SwerveDrivetrain(CommandXboxController cx, Robot robot) {
 
     this.cx = cx;
+    this.robot = robot;
 
     try {
       robotConfig = RobotConfig.fromGUISettings();
@@ -114,15 +123,14 @@ public class SwerveDrivetrain extends SubsystemBase {
 
 
     // path planner init
-     
     AutoBuilder.configure(
       this::getPose, // Robot pose supplier
       this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
       new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(15.0, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(15.0, 0.0, 0.0) // Rotation PID constants
+              new PIDConstants(1, 0.85, 0.0), // Translation PID constants
+              new PIDConstants(1, 0.75, 0.0) // Rotation PID constants
       ),
       robotConfig, // The robot configuration
       () -> {
@@ -155,7 +163,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     
   }
 
-  private Rotation2d getGyroRotation2d(){
+  public Rotation2d getGyroRotation2d(){
     return Rotation2d.fromDegrees(getAngle()); 
   }
 
@@ -257,7 +265,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    sOdometry.update(getGyroRotation2d(), getModulePositions());
+   
     SmartDashboard.putNumber("Odometry X value", Units.metersToFeet(sOdometry.getEstimatedPosition().getX()));
     SmartDashboard.putNumber("Odometry Y value", Units.metersToFeet(sOdometry.getEstimatedPosition().getY()));
     SmartDashboard.putNumber("Odometry rotation", sOdometry.getEstimatedPosition().getRotation().getDegrees());
@@ -266,6 +274,58 @@ public class SwerveDrivetrain extends SubsystemBase {
   
     // SmartDashboard.putNumber("Odometry pose X: ", Units.metersToFeet(sOdometry.getPoseMeters().getX()));
     // SmartDashboard.putNumber("Odometry pose Y: ", Units.metersToFeet(sOdometry.getPoseMeters().getY()));
+    sOdometry.update(getGyroRotation2d(), getModulePositions());
+    LimelightHelpers.SetRobotOrientation(this.frontLimeLight, this.getAngle(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(frontLimeLight);
+    LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(frontLimeLight);
+  
+    boolean doRejectUpdate = false;
+
+    if(!robot.isEnabled() && mt1 != null){
+      if(mt1.tagCount == 0)
+      {
+
+      }else if(Math.abs(pigeon2.getRotation2d().getDegrees() - mt1.pose.getRotation().getDegrees()) < 1){
+        
+      }else{
+        pigeon2.setYaw(mt1.pose.getRotation().getDegrees());
+        sOdometry.resetRotation(mt1.pose.getRotation());
+        doRejectUpdate = true;
+      }
+     }
+
+   
+    if (mt2 != null)
+    {
+      if(Math.abs(pigeon2.getAngularVelocityZWorld().getValueAsDouble()) > 360)
+    {
+      doRejectUpdate = true;
+    }
+    if(mt2.tagCount == 0)
+    {
+
+      doRejectUpdate = true;
+    }
+    if(!doRejectUpdate)
+    {
+       sOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+       sOdometry.addVisionMeasurement(
+           mt2.pose,
+           mt2.timestampSeconds);
+    }
+    }
+  else{
+   // System.out.println("null mt2");
+  }
+
+  SmartDashboard.putNumber("Odometry X: (ft)", Units.metersToFeet(sOdometry.getEstimatedPosition().getX()));
+  SmartDashboard.putNumber("Odometry Y: (ft)", Units.metersToFeet(sOdometry.getEstimatedPosition().getY()));
+  SmartDashboard.putNumber("Odometry Rotation", sOdometry.getEstimatedPosition().getRotation().getDegrees());
+  SmartDashboard.putNumber("Pidgeon Angle", getAngle());
+  SmartDashboard.putNumber("Field Rotation", fieldWithVision.getRobotPose().getRotation().getDegrees());
+
+  fieldWithVision.setRobotPose(sOdometry.getEstimatedPosition().getX(), sOdometry.getEstimatedPosition().getY(), sOdometry.getEstimatedPosition().getRotation().div(180/Math.PI));
+
 
   }
 

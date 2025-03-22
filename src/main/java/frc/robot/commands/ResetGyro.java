@@ -19,7 +19,8 @@ public class ResetGyro extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    sDrivetrain.pigeon2.setYaw(0);
+    sDrivetrain.pigeon2.reset();
+    sDrivetrain.sOdometry.resetRotation(sDrivetrain.getGyroRotation2d());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,6 +34,6 @@ public class ResetGyro extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
