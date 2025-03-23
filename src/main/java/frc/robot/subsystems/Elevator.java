@@ -47,15 +47,16 @@ public class Elevator extends SubsystemBase {
   Boolean[] levelToBooleans = new Boolean[EleLevel.TOTAL.ordinal()];
   
 
-
-  public SparkMax followerElevatorMotor = new SparkMax(RobotConstants.elevatorLeftMotorID, MotorType.kBrushless);
   public SparkMax leaderElevatorMotor = new SparkMax(RobotConstants.elevatorRightMotorID, MotorType.kBrushless);
+  public SparkMax followerElevatorMotor = new SparkMax(RobotConstants.elevatorLeftMotorID, MotorType.kBrushless);
+ 
   SparkMaxConfig followerElevatorConfig = new SparkMaxConfig();
   SparkMaxConfig leaderElevatorConfig = new SparkMaxConfig();
+
+  boolean L0sensor;
   DigitalInput L1sensor = new DigitalInput(Constants.RobotConstants.L1HallID);
   DigitalInput L2sensor = new DigitalInput(Constants.RobotConstants.L2HallID);
   DigitalInput L3sensor = new DigitalInput(Constants.RobotConstants.L3HallID);
-  boolean L0sensor;
   DigitalInput L4sensor = new DigitalInput(Constants.RobotConstants.L4HallID);
 
 
@@ -129,10 +130,10 @@ public class Elevator extends SubsystemBase {
   }
 
   public void moveUp(){
-    leaderElevatorMotor.set(0.4);
+    leaderElevatorMotor.set(0.1);
   }
   public void moveDown(){
-    leaderElevatorMotor.set(-0.4);
+    leaderElevatorMotor.set(-0.1);
   }
 
 

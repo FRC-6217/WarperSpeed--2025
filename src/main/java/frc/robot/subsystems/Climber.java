@@ -24,6 +24,7 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber() {
     climberConfig.idleMode(IdleMode.kBrake);
+    climberConfig.inverted(true);
     climberMotor.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     SmartDashboard.putNumber("climber speed",.2);
 
@@ -41,9 +42,9 @@ public class Climber extends SubsystemBase {
   }
 
   public void forward() {
-    climberMotor.set(-1);
+    climberMotor.set(1);
   }
   public void reverse(){
-    climberMotor.set(1);
+    climberMotor.set(-1);
   }
 }

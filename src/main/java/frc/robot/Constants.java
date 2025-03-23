@@ -36,6 +36,13 @@ public final class Constants {
 
   public static class AutoConstants{
 
+    public static final double reefLeftTranslationSetpoint = 0;
+    public static final double reefLeftStrafeSetpoint = 0;
+    public static final double reefLeftRotationSetpoint = 0;
+    public static final double reefRightTranslationSetpoint = 0;
+    public static final double reefRightStrafeSetpoint = 0;
+    public static final double reefRightRotationSetpoint = 0;
+
    }
 
   public static class SemiAutoConstants{
