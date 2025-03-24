@@ -6,21 +6,21 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Intake;
+
 import frc.robot.subsystems.Placer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeUntilBeamBreak extends Command {
   /** Creates a new IntakeUntilBeamBreak. */
-  Intake intake;
+
   Placer placer;
   RobotContainer robotContainer;
 
-  public IntakeUntilBeamBreak(Intake intake, Placer placer, RobotContainer robotContainer) {
-    this.intake = intake;
+  public IntakeUntilBeamBreak( Placer placer, RobotContainer robotContainer) {
+ 
     this.placer = placer;
     this.robotContainer = robotContainer;
-    addRequirements(intake,placer);
+    addRequirements(placer);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -32,10 +32,8 @@ public class IntakeUntilBeamBreak extends Command {
   @Override
   public void execute() {
     if(robotContainer.elevatorBottomLimitTrigger.getAsBoolean()){
-      intake.forward();
       placer.forward();
     }else{
-      intake.stop();
       placer.stop();
     }
   }
@@ -43,15 +41,12 @@ public class IntakeUntilBeamBreak extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
-  
-    intake.stop();
     placer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return placer.getBeamBreakBoolean();
+    return placer.getPlacerBeamBreak().isPressed();
   }
 }

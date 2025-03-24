@@ -23,24 +23,28 @@ public class Placer extends SubsystemBase {
   SparkMaxConfig placerConfig = new SparkMaxConfig();
   String uniqueID = "Placer Speed:";
 
+
   /** Creates a new Placer. */
   public Placer() {
     SmartDashboard.putNumber(uniqueID, 0);
 
     placerConfig.limitSwitch.forwardLimitSwitchEnabled(false);
-    placer.configure(placerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    
+    placerConfig.limitSwitch.reverseLimitSwitchEnabled(false);
 
-      
+    placer.configure(placerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);     
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("placer beambreak", getBeamBreakBoolean());
+    SmartDashboard.putBoolean("placer beambreak", getPlacerBeamBreak().isPressed());
+    SmartDashboard.putBoolean("Elevator Top Limit", getElevatorLimitSwitch().isPressed());
     // This method will be called once per scheduler run
   }
   public void forward(){
-    placer.set(Constants.RobotConstants.defaultPlacerSpeed);
+    placer.set(-Constants.RobotConstants.defaultPlacerSpeed);
+  }
+  public void algaePlace(){
+    placer.set(-1);
   }
   public void backward(){
     placer.set(Constants.RobotConstants.defaultPlacerSpeed);
@@ -49,13 +53,13 @@ public class Placer extends SubsystemBase {
     placer.set(0);
   }
 
-  public SparkLimitSwitch getBeamBreak() {
+  public SparkLimitSwitch getElevatorLimitSwitch() {
 
-    return placer.getForwardLimitSwitch();
+    return placer.getReverseLimitSwitch();
 
   }
 
-  public Boolean getBeamBreakBoolean(){
-    return getBeamBreak().isPressed();
+  public SparkLimitSwitch getPlacerBeamBreak(){
+    return placer.getForwardLimitSwitch();
   }
 }

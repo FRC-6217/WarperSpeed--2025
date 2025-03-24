@@ -12,6 +12,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.sim.SparkLimitSwitchSim;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -58,14 +59,17 @@ public class Elevator extends SubsystemBase {
   DigitalInput L2sensor = new DigitalInput(Constants.RobotConstants.L2HallID);
   DigitalInput L3sensor = new DigitalInput(Constants.RobotConstants.L3HallID);
   DigitalInput L4sensor = new DigitalInput(Constants.RobotConstants.L4HallID);
+  SparkLimitSwitch topLimitSwitch;
 
 
   /** Creates a new Elevator. */
-  public Elevator() {
+  public Elevator(SparkLimitSwitch topLimitSwitch) {
+    this.topLimitSwitch = topLimitSwitch;
+
     leaderElevatorConfig.idleMode(IdleMode.kBrake);
     leaderElevatorConfig.inverted(true);
     leaderElevatorConfig.encoder.positionConversionFactor(RobotConstants.elevatorScalingFactor);
-    leaderElevatorConfig.softLimit.apply(new SoftLimitConfig().forwardSoftLimit(Constants.RobotConstants.L4Position+.1));
+    leaderElevatorConfig.softLimit.apply(new SoftLimitConfig().forwardSoftLimit(Constants.RobotConstants.L4Position + .1));
     leaderElevatorMotor.configure(leaderElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
 
@@ -74,7 +78,6 @@ public class Elevator extends SubsystemBase {
     followerElevatorMotor.configure(followerElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();  
-    
   }
 
   
@@ -99,6 +102,10 @@ public class Elevator extends SubsystemBase {
       setL4AndStop();
     }
 
+
+    if((topLimitSwitch.isPressed() || !L4sensor.get()) && leaderElevatorMotor.get() > 0){
+      leaderElevatorMotor.set(0);
+    }
     
     levelToBooleans[EleLevel.L0.ordinal()] = L0sensor;
     levelToBooleans[EleLevel.L1.ordinal()] = !L1sensor.get();
@@ -130,10 +137,10 @@ public class Elevator extends SubsystemBase {
   }
 
   public void moveUp(){
-    leaderElevatorMotor.set(0.1);
+    leaderElevatorMotor.set(0.2);
   }
   public void moveDown(){
-    leaderElevatorMotor.set(-0.1);
+    leaderElevatorMotor.set(-0.2);
   }
 
 

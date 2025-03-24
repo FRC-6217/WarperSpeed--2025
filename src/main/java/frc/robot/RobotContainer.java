@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoLeaveLine;
-import frc.robot.commands.CameraDrive;
 import frc.robot.commands.Drive;
 import frc.robot.commands.IntakeUntilBeamBreak;
 import frc.robot.commands.PIDElevatorCommand;
@@ -16,7 +15,6 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.EleLevel;
 import frc.robot.subsystems.ElevatorNoHalls;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLightSub;
 import frc.robot.subsystems.Placer;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -48,12 +46,12 @@ public class RobotContainer {
  
   public final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(m_driverController, robot);
   //public final AlgaeClaw algaeClaw = new AlgaeClaw( );
-  public final Elevator elevator = new Elevator();
+ 
   public final Climber climber = new Climber();
-  public final Intake intake = new Intake();
   public final Placer placer = new Placer();
+  public final Elevator elevator = new Elevator(placer.getElevatorLimitSwitch());
 
-  public final Trigger intakeBeamBrakeTrigger = new Trigger(() -> !intake.getIntakeBeamBrake().get());
+  public final Trigger intakeBeamBrakeTrigger = new Trigger(() -> !placer.getPlacerBeamBreak().isPressed());
   public final Trigger elevatorBottomLimitTrigger = new Trigger(() -> elevator.getSignalOfLevel(EleLevel.L0));
 
   public SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -80,11 +78,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("L0Elevator", new ElevatorCommand(elevator, EleLevel.L0, this));
     */
 
-    NamedCommands.registerCommand("ReefLeftAlign", new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefLeft));
-    NamedCommands.registerCommand("ReefRightAlign", new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefRight));
+   
 
     NamedCommands.registerCommand("Place Coral", new PlacerCommand(placer));
-    NamedCommands.registerCommand("Grab Coral", new IntakeUntilBeamBreak(intake, placer, this));
+    NamedCommands.registerCommand("Grab Coral", new IntakeUntilBeamBreak(placer, this));
 
     //NamedCommands.registerCommand("autoFindNoteClockWise", autoFindNoteClockWiseCommand);
     //NamedCommands.registerCommand("autoFindNoteCounterClockWise", autoFindNoteCounterClockWiseCommand);
@@ -163,8 +160,10 @@ public class RobotContainer {
     button7.onTrue(new PIDElevatorCommand(elevator, EleLevel.L3, this));
     button8.onTrue(new PIDElevatorCommand(elevator, EleLevel.L4, this));
     button5.onTrue(new PIDElevatorCommand(elevator, EleLevel.L0, this));
-    button9.whileTrue(new IntakeUntilBeamBreak(intake, placer, this)).onFalse(Commands.runOnce(intake::stop, intake));
-    button13.whileTrue(Commands.runOnce(intake::backward, intake)).onFalse(Commands.runOnce(intake::stop, intake));
+    button9.whileTrue(new IntakeUntilBeamBreak(placer, this)).onFalse(Commands.runOnce(placer::stop, placer));
+    
+    button10.whileTrue(new PlacerCommand(placer)).onFalse(Commands.runOnce(placer::stop, placer));
+    button13.whileTrue(Commands.runOnce(placer::algaePlace, placer)).onFalse(Commands.runOnce(placer::stop, placer));
     button14.whileTrue(Commands.runOnce(placer::backward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
 
     driverOpPOVDown.whileTrue(Commands.runOnce(climber::reverse, climber)).onFalse(Commands.runOnce(climber::stop, climber));
@@ -186,10 +185,6 @@ public class RobotContainer {
     fastMode.onTrue(Commands.runOnce(swerveDrivetrain.governor::setFastMode, swerveDrivetrain));
     reduceSpeed.onTrue(Commands.runOnce(swerveDrivetrain.governor::decrement, swerveDrivetrain));
     increaseSpeed.onTrue(Commands.runOnce(swerveDrivetrain.governor::increment, swerveDrivetrain));
-
-    driverX.onTrue(new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefLeft));
-    driverB.onTrue(new CameraDrive(swerveDrivetrain, reefLimeLight, Constants.SemiAutoConstants.reefRight));
-
   }
 
   public Command getAutonomousCommand() {
