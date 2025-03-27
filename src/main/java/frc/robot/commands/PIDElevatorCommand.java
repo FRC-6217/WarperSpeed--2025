@@ -24,46 +24,33 @@ public class PIDElevatorCommand extends Command {
   /** Creates a new PIDElevatorCommand. */
   public Elevator elevator;
   public RobotContainer robotContainer;
-  public EleLevel setPoint;
-  String elevatorPIDName = "Elevator P: ";
-  PIDController pid = new PIDController(0, 0, 0);
+  public double setpoint;
   
-  public PIDElevatorCommand(Elevator elevator, EleLevel setPoint, RobotContainer robotContainer) {
+  public PIDElevatorCommand(Elevator elevator, double setpoint) {
     this.elevator = elevator;
-    this.setPoint = setPoint;
-    this.robotContainer = robotContainer;
-    SmartDashboard.putNumber(elevatorPIDName, 0);
-    pid.setTolerance(0.15);
+    this.setpoint = setpoint;
+    
+    addRequirements(elevator);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pid.setP(0.12);
-    pid.setSetpoint(elevator.getDistanceFromLevel(setPoint));
+   elevator.setSetpoint(setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    
-    double outputSeed = pid.calculate(elevator.getPosition());
-    outputSeed = MathUtil.clamp(outputSeed, -0.9, 0.9);
-    SmartDashboard.putNumber("Elevator Speed ", outputSeed);
-    elevator.setSpeed(outputSeed);
-  }
+  public void execute(){}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    elevator.stop();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-   
-    return pid.atSetpoint()||robotContainer.intakeBeamBrakeTrigger.getAsBoolean();
+    return true;
   }
 }

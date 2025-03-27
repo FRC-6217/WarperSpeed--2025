@@ -114,19 +114,20 @@ public final class Constants {
     public static final double feedforward = 0.011;
     public static final String Limelight4Name = "Limelight 4";
 
-    public static final double elevatorScalingFactor = 0.186144;
+    public static final double elevatorScalingFactor = 0.48758049;
 
     public static final int L1HallID = 6;
     public static final int L2HallID = 7;
-    public static final int L3HallID = 8;
-    public static final int L4HallID = 9;
+    public static final int L3HallID = 9;
+    public static final int L4HallID = 8;
     public static final int intakeBeamBreak = 1;
 
     public static final double L0Position = 7.75;
     public static final double L1Position = 0;
-    public static final double L2Position = 32.75;
-    public static final double L3Position = 47;
-    public static final double L4Position = 71.5;
+    public static final double L2Position = 34.25;
+    public static final double L3Position = 50.25;
+    public static final double L4Position = 73;
+    public static final int algaePositionID = 23;
     public static double elevatorConstantSpeedDown = -0.7;
     public static double elevatorConstantSpeedUp = 0.7;
     

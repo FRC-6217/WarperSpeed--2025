@@ -31,11 +31,9 @@ public class IntakeUntilBeamBreak extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(robotContainer.elevatorBottomLimitTrigger.getAsBoolean()){
+    
       placer.forward();
-    }else{
-      placer.stop();
-    }
+   
   }
 
   // Called once the command ends or is interrupted.

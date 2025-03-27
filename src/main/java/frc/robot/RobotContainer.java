@@ -5,7 +5,9 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.commands.AutoLeaveLine;
+import frc.robot.commands.AutoLineUpReef;
 import frc.robot.commands.Drive;
 import frc.robot.commands.IntakeUntilBeamBreak;
 import frc.robot.commands.PIDElevatorCommand;
@@ -123,6 +125,7 @@ public class RobotContainer {
     Trigger button13 = m_gameOperatorController.button(13);
     Trigger button14 = m_gameOperatorController.button(14);
     Trigger button15 = m_gameOperatorController.button(15);
+    Trigger button16 = m_gameOperatorController.button(16);
 
 
     Trigger driverBackLeft = m_driverController.button(Constants.OperatorConstants.kLeftBackButton);
@@ -156,10 +159,15 @@ public class RobotContainer {
 
     button2.whileTrue(Commands.runOnce(elevator::moveUp, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
     button1.whileTrue(Commands.runOnce(elevator::moveDown, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
-    button6.onTrue(new PIDElevatorCommand(elevator, EleLevel.L2, this));
-    button7.onTrue(new PIDElevatorCommand(elevator, EleLevel.L3, this));
-    button8.onTrue(new PIDElevatorCommand(elevator, EleLevel.L4, this));
-    button5.onTrue(new PIDElevatorCommand(elevator, EleLevel.L0, this));
+    
+    
+    button5.toggleOnTrue(new PIDElevatorCommand(elevator, RobotConstants.L0Position)).onFalse(Commands.runOnce(elevator::setIdle, elevator));
+    button6.onTrue(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).onFalse(Commands.runOnce(elevator::setIdle, elevator));
+    button7.onTrue(new PIDElevatorCommand(elevator, RobotConstants.L3Position)).onFalse(Commands.runOnce(elevator::setIdle, elevator));
+    button8.onTrue(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).onFalse(Commands.runOnce(elevator::setIdle, elevator));
+
+    button16.onTrue(Commands.runOnce(elevator::setPIDOff, elevator));
+   
     button9.whileTrue(new IntakeUntilBeamBreak(placer, this)).onFalse(Commands.runOnce(placer::stop, placer));
     
     button10.whileTrue(new PlacerCommand(placer)).onFalse(Commands.runOnce(placer::stop, placer));
@@ -171,7 +179,6 @@ public class RobotContainer {
     
 
 
-   
     //Driver Commands
     resetDriverEncoder.whileTrue(Commands.runOnce(swerveDrivetrain::initialize, swerveDrivetrain));
 
@@ -202,15 +209,15 @@ public class RobotContainer {
   }
   public Command deadReckonL4(){
     Command auto = new AutoLeaveLine(swerveDrivetrain);
-    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L4, this)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, EleLevel.L0, this));
+    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L0Position));
   }
   public Command deadReckonL3(){
     Command auto = new AutoLeaveLine(swerveDrivetrain);
-    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L3, this)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, EleLevel.L0, this));
+    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L3Position)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L0Position));
   }
   public Command deadReckonL2(){
     Command auto = new AutoLeaveLine(swerveDrivetrain);
-    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L2, this)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, EleLevel.L0, this));
+    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L0Position));
   }
   public Command doNothing(){
     return new PrintCommand("Nothing");

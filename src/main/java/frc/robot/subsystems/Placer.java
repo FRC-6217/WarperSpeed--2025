@@ -44,7 +44,7 @@ public class Placer extends SubsystemBase {
     placer.set(-Constants.RobotConstants.defaultPlacerSpeed);
   }
   public void algaePlace(){
-    placer.set(-1);
+    placer.set(-.6);
   }
   public void backward(){
     placer.set(Constants.RobotConstants.defaultPlacerSpeed);

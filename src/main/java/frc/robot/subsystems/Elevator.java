@@ -10,6 +10,7 @@ import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.PIDOutput_PIDOutputModeValue;
 import com.pathplanner.lib.config.RobotConfig;
 import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkLimitSwitch;
@@ -21,6 +22,9 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,11 +47,21 @@ public class Elevator extends SubsystemBase {
     TOTAL,
   }
 
+  public static enum EleState
+  {
+    PIDOn,
+    PIDOff
+  }
+
   double[] levelToDistance = {RobotConstants.L0Position, RobotConstants.L1Position, RobotConstants.L2Position, RobotConstants.L3Position, RobotConstants.L4Position}; 
 
   Boolean[] levelToBooleans = new Boolean[EleLevel.TOTAL.ordinal()];
+
+  public PIDController pidController = new PIDController(0, 0, 0);
+  public double pidOutput = 0;
   
 
+  public EleState eleState;
   public SparkMax leaderElevatorMotor = new SparkMax(RobotConstants.elevatorRightMotorID, MotorType.kBrushless);
   public SparkMax followerElevatorMotor = new SparkMax(RobotConstants.elevatorLeftMotorID, MotorType.kBrushless);
  
@@ -60,6 +74,10 @@ public class Elevator extends SubsystemBase {
   DigitalInput L3sensor = new DigitalInput(Constants.RobotConstants.L3HallID);
   DigitalInput L4sensor = new DigitalInput(Constants.RobotConstants.L4HallID);
   SparkLimitSwitch topLimitSwitch;
+  SlewRateLimiter slewRateLimiter = new SlewRateLimiter(.01);
+
+  double setpoint = Constants.RobotConstants.L0Position;;
+
 
 
   /** Creates a new Elevator. */
@@ -77,7 +95,16 @@ public class Elevator extends SubsystemBase {
     followerElevatorConfig.follow(leaderElevatorMotor.getDeviceId(), false);
     followerElevatorMotor.configure(followerElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();  
+    SmartDashboard.putNumber("PID P", 0.07);
+
+   pidController.setP(SmartDashboard.getNumber("PID P", 0));
+   pidController.setTolerance(0.1);
+   
+   setpoint = Constants.RobotConstants.L0Position;
+    
+   eleState = EleState.PIDOff;
+
+   L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();  
   }
 
   
@@ -89,6 +116,10 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("L1 limit Switch", !L1sensor.get());
     SmartDashboard.putBoolean("L2 limit Switch", !L2sensor.get());
     SmartDashboard.putBoolean("L3 limit Switch", !L3sensor.get());
+    SmartDashboard.putNumber("PID setpoint", setpoint);
+    SmartDashboard.putNumber("Elevator Speed", leaderElevatorMotor.get());
+
+    pidController.setP(SmartDashboard.getNumber("PID P", 0));
 
     if(L0sensor){
       setL0();
@@ -113,8 +144,52 @@ public class Elevator extends SubsystemBase {
     levelToBooleans[EleLevel.L3.ordinal()] = !L3sensor.get();
     levelToBooleans[EleLevel.L4.ordinal()] = !L4sensor.get();
 
+    if(eleState == EleState.PIDOff){
+
+    }else if(eleState == EleState.PIDOn){
+      pidController.setSetpoint(setpoint);
+      if(setpoint == RobotConstants.L0Position){
+        if(L0sensor){
+          pidOutput = 0;
+        }else{
+          pidOutput = pidController.calculate(getPosition());
+        }
+      }else if(setpoint == RobotConstants.L2Position){
+        if(!L2sensor.get()){
+          pidOutput = 0;
+        }else{
+          pidOutput = pidController.calculate(getPosition());
+        }
+      }else if(setpoint == RobotConstants.L3Position){
+        if(!L3sensor.get()){
+          pidOutput = 0;
+        }else{
+          pidOutput = pidController.calculate(getPosition());
+        }
+      }else if(setpoint == RobotConstants.L4Position){
+        if(!L4sensor.get()){
+          pidOutput = 0;
+        }else{
+          pidOutput = pidController.calculate(getPosition());
+        }
+      }else{
+        pidOutput = pidController.calculate(getPosition());
+      }
+        pidOutput = MathUtil.clamp(pidOutput, -0.65, 0.65);
+        if(Math.abs(getPosition() - setpoint) > 12){
+          //pidOutput = slewRateLimiter.calculate(pidOutput);
+        }        
+        leaderElevatorMotor.set(pidOutput);
+        if(topLimitSwitch.isPressed() || !L4sensor.get() && leaderElevatorMotor.get() > 0){
+          leaderElevatorMotor.set(0);
+      }
+      
+    }
+
+
 
     SmartDashboard.putNumber("Elevator Position", getPosition());
+      
     L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();
 
     // This method will be called once per scheduler run
@@ -166,6 +241,19 @@ public class Elevator extends SubsystemBase {
     this.l4asLimit();
   }
 
+  public void setSetpoint(double setpoint){
+    this.setpoint = setpoint;
+    eleState = EleState.PIDOn;
+  }
+  
+  public void setIdle(){
+    setpoint = getPosition();
+    eleState = EleState.PIDOn;
+  }
+
+  public void setPIDOff(){
+    eleState = EleState.PIDOff;
+  }
 
 public boolean getSignalOfLevel(EleLevel level){
  return levelToBooleans[level.ordinal()];
