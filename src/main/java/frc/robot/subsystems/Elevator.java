@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.random.RandomGenerator.LeapableGenerator;
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -59,6 +60,7 @@ public class Elevator extends SubsystemBase {
 
   public PIDController pidController = new PIDController(0, 0, 0);
   public double pidOutput = 0;
+  public double previousOutput = 0;
   
 
   public EleState eleState;
@@ -74,7 +76,9 @@ public class Elevator extends SubsystemBase {
   DigitalInput L3sensor = new DigitalInput(Constants.RobotConstants.L3HallID);
   DigitalInput L4sensor = new DigitalInput(Constants.RobotConstants.L4HallID);
   SparkLimitSwitch topLimitSwitch;
-  SlewRateLimiter slewRateLimiter = new SlewRateLimiter(.01);
+  SlewRateLimiter slewRateLimiter = new SlewRateLimiter(1.5);
+  String elevatorUpperClampString = "Elevator Upper Clamp";
+  String elevatorLowwerClampString = "Elevator Lowwer Clamp";
 
   double setpoint = Constants.RobotConstants.L0Position;;
 
@@ -83,11 +87,13 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
   public Elevator(SparkLimitSwitch topLimitSwitch) {
     this.topLimitSwitch = topLimitSwitch;
+    SmartDashboard.putNumber(elevatorUpperClampString, 0.85);
+    SmartDashboard.putNumber(elevatorLowwerClampString, 0.85);
 
     leaderElevatorConfig.idleMode(IdleMode.kBrake);
     leaderElevatorConfig.inverted(true);
     leaderElevatorConfig.encoder.positionConversionFactor(RobotConstants.elevatorScalingFactor);
-    leaderElevatorConfig.softLimit.apply(new SoftLimitConfig().forwardSoftLimit(Constants.RobotConstants.L4Position + .1));
+    leaderElevatorConfig.softLimit.apply(new SoftLimitConfig().forwardSoftLimit(Constants.RobotConstants.L4Position + .2));
     leaderElevatorMotor.configure(leaderElevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
 
@@ -104,6 +110,8 @@ public class Elevator extends SubsystemBase {
     
    eleState = EleState.PIDOff;
 
+   pidOutput = 0;
+
    L0sensor = leaderElevatorMotor.getReverseLimitSwitch().isPressed();  
   }
 
@@ -118,6 +126,8 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("L3 limit Switch", !L3sensor.get());
     SmartDashboard.putNumber("PID setpoint", setpoint);
     SmartDashboard.putNumber("Elevator Speed", leaderElevatorMotor.get());
+    SmartDashboard.putNumber("Elevator Setpoint", setpoint);
+    SmartDashboard.putString("Ele Level", eleState.name());
 
     pidController.setP(SmartDashboard.getNumber("PID P", 0));
 
@@ -145,6 +155,9 @@ public class Elevator extends SubsystemBase {
     levelToBooleans[EleLevel.L4.ordinal()] = !L4sensor.get();
 
     if(eleState == EleState.PIDOff){
+
+      slewRateLimiter.calculate(0);
+      
 
     }else if(eleState == EleState.PIDOn){
       pidController.setSetpoint(setpoint);
@@ -175,15 +188,19 @@ public class Elevator extends SubsystemBase {
       }else{
         pidOutput = pidController.calculate(getPosition());
       }
-        pidOutput = MathUtil.clamp(pidOutput, -0.65, 0.65);
-        if(Math.abs(getPosition() - setpoint) > 12){
-          //pidOutput = slewRateLimiter.calculate(pidOutput);
-        }        
+        pidOutput = MathUtil.clamp(pidOutput, -.5, .5);
+
+        
+
+       
+      pidOutput = slewRateLimiter.calculate(pidOutput);
+      
+
         leaderElevatorMotor.set(pidOutput);
-        if(topLimitSwitch.isPressed() || !L4sensor.get() && leaderElevatorMotor.get() > 0){
+        if((topLimitSwitch.isPressed() || !L4sensor.get()) && leaderElevatorMotor.get() > 0){
           leaderElevatorMotor.set(0);
       }
-      
+    
     }
 
 
@@ -218,6 +235,13 @@ public class Elevator extends SubsystemBase {
     leaderElevatorMotor.set(-0.2);
   }
 
+  public void reset(){
+    eleState = EleState.PIDOff;
+    setpoint = getPosition();
+    pidOutput = 0;
+    leaderElevatorMotor.set(0);
+    slewRateLimiter.reset(0);
+  }
 
   public void setL0(){
     this.setPosition(EleLevel.L0);

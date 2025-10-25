@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.commands.AlgaeClawCommand;
 import frc.robot.commands.AutoLeaveLine;
 import frc.robot.commands.AutoLineUpReef;
 import frc.robot.commands.Drive;
@@ -13,6 +14,8 @@ import frc.robot.commands.IntakeUntilBeamBreak;
 import frc.robot.commands.PIDElevatorCommand;
 import frc.robot.commands.PlacerCommand;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.AutoLineUpReef.TargetSide;
+import frc.robot.subsystems.AlgaeClaw;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.EleLevel;
@@ -52,6 +55,7 @@ public class RobotContainer {
   public final Climber climber = new Climber();
   public final Placer placer = new Placer();
   public final Elevator elevator = new Elevator(placer.getElevatorLimitSwitch());
+ // public final AlgaeClaw algaeClaw = new AlgaeClaw();
 
   public final Trigger intakeBeamBrakeTrigger = new Trigger(() -> !placer.getPlacerBeamBreak().isPressed());
   public final Trigger elevatorBottomLimitTrigger = new Trigger(() -> elevator.getSignalOfLevel(EleLevel.L0));
@@ -150,7 +154,8 @@ public class RobotContainer {
     Trigger reduceSpeed = m_driverController.axisGreaterThan(Constants.OperatorConstants.leftTriggerAxis,.6);
     Trigger increaseSpeed = m_driverController.axisGreaterThan(Constants.OperatorConstants.rightTriggerAxis,.6);
     driverA.whileTrue(new PlacerCommand(placer)).onFalse(Commands.runOnce(placer::stop, placer));
-
+    driverX.whileTrue(new AutoLineUpReef(swerveDrivetrain, TargetSide.Left)).onFalse(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain));
+    driverB.whileTrue(new AutoLineUpReef(swerveDrivetrain, TargetSide.Right)).onFalse(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain));
 
 
     // Operator Commands
@@ -159,20 +164,24 @@ public class RobotContainer {
 
     button2.whileTrue(Commands.runOnce(elevator::moveUp, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
     button1.whileTrue(Commands.runOnce(elevator::moveDown, elevator)).onFalse(Commands.runOnce(elevator::stop, elevator));
+
+    button3.whileTrue(Commands.runOnce(climber::reverse, climber)).onFalse(Commands.runOnce(climber::stop, climber));
+    button4.whileTrue(Commands.runOnce(climber::forward, climber)).onFalse(Commands.runOnce(climber::stop, climber));
     
     
-    button5.toggleOnTrue(new PIDElevatorCommand(elevator, RobotConstants.L0Position)).onFalse(Commands.runOnce(elevator::setIdle, elevator));
+    button5.onTrue(new PIDElevatorCommand(elevator, RobotConstants.L0Position)).onFalse(Commands.runOnce(elevator::setIdle, elevator));
     button6.onTrue(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).onFalse(Commands.runOnce(elevator::setIdle, elevator));
     button7.onTrue(new PIDElevatorCommand(elevator, RobotConstants.L3Position)).onFalse(Commands.runOnce(elevator::setIdle, elevator));
     button8.onTrue(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).onFalse(Commands.runOnce(elevator::setIdle, elevator));
-
-    button16.onTrue(Commands.runOnce(elevator::setPIDOff, elevator));
    
     button9.whileTrue(new IntakeUntilBeamBreak(placer, this)).onFalse(Commands.runOnce(placer::stop, placer));
     
     button10.whileTrue(new PlacerCommand(placer)).onFalse(Commands.runOnce(placer::stop, placer));
+    //button11.onTrue(Commands.runOnce(algaeClaw::setPlaceState)).onFalse(Commands.runOnce(algaeClaw::setIdleState));
     button13.whileTrue(Commands.runOnce(placer::algaePlace, placer)).onFalse(Commands.runOnce(placer::stop, placer));
     button14.whileTrue(Commands.runOnce(placer::backward, placer)).onFalse(Commands.runOnce(placer::stop, placer));
+    //button15.onTrue(Commands.runOnce(algaeClaw::setIntakeState)).onFalse(Commands.runOnce(algaeClaw::setIdleState));
+    button16.onTrue(Commands.runOnce(elevator::setPIDOff, elevator));
 
     driverOpPOVDown.whileTrue(Commands.runOnce(climber::reverse, climber)).onFalse(Commands.runOnce(climber::stop, climber));
     m_driverController.povUp().whileTrue(Commands.runOnce(climber::forward, climber)).onFalse(Commands.runOnce(climber::stop, climber));
@@ -195,11 +204,12 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    //Command auto = new AutoLeaveLine(swerveDrivetrain);
+    Command auto = new AutoLeaveLine(swerveDrivetrain);
     //PathPlannerAuto auto = new PathPlannerAuto(autoChooser.getSelected());
     //SmartDashboard.putString("Auto Selected", autoChooser.getSelected());
-    return autoChooser.getSelected(); 
+    //return autoChooser.getSelected(); 
     //return auto.andThen(Commands.runOnce(swerveDrivetrain::stop));
+    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).andThen(Commands.waitSeconds(3)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).andThen(Commands.waitSeconds(2)).andThen(Commands.runOnce(elevator::setIdle, elevator));
    //return auto.andThen(new IntakeUntilBeamBreak(intake, placer, this)).andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L4, this)).andThen(Commands.waitSeconds(.5));
 
   }

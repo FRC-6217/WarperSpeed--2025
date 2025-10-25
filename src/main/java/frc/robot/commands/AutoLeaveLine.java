@@ -17,6 +17,7 @@ public class AutoLeaveLine extends Command {
     /** Creates a new AutoLeaveLine. */
     public AutoLeaveLine(SwerveDrivetrain swerveDrivetrain) {
       this.swerveDrivetrain = swerveDrivetrain;
+      addRequirements(swerveDrivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -24,6 +25,7 @@ public class AutoLeaveLine extends Command {
   @Override
   public void initialize() {
   swerveDrivetrain.setPigeonAngle(180);
+  swerveDrivetrain.setOdometry(0, 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -36,6 +36,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
+  
+
      FollowPathCommand.warmupCommand().schedule();
   
   }
@@ -60,12 +62,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    m_robotContainer.elevator.reset();
     m_robotContainer.swerveDrivetrain.allianceSelector.setAlliance();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.elevator.reset();
     m_robotContainer.swerveDrivetrain.initialize();
     
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -83,6 +87,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.elevator.reset();
     m_robotContainer.swerveDrivetrain.initialize();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

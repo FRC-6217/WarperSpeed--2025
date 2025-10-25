@@ -279,7 +279,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(frontLimeLight);
     LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(frontLimeLight);
   
-    boolean doRejectUpdate = false;
+    boolean doRejectUpdate = true;
 
     if(!robot.isEnabled() && mt1 != null){
       if(mt1.tagCount == 0)

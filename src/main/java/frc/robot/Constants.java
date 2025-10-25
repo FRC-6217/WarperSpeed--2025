@@ -36,11 +36,11 @@ public final class Constants {
 
   public static class AutoConstants{
 
-    public static final double reefLeftTranslationSetpoint = 0;
-    public static final double reefLeftStrafeSetpoint = 0;
+    public static final double reefLeftTranslationSetpoint = 26.84;
+    public static final double reefLeftStrafeSetpoint = 19.74;
     public static final double reefLeftRotationSetpoint = 0;
-    public static final double reefRightTranslationSetpoint = 0;
-    public static final double reefRightStrafeSetpoint = 0;
+    public static final double reefRightTranslationSetpoint = 7.54;
+    public static final double reefRightStrafeSetpoint = -33.2;
     public static final double reefRightRotationSetpoint = 0;
 
    }
@@ -69,7 +69,7 @@ public final class Constants {
     public static final double wheelDiameter = Units.inchesToMeters(4);
     public static final double driveSlewTimeInSecond = 0.06;
     public static final double driveMaxVelo = (6000/60/driveGearRatio)*(wheelDiameter)*Math.PI;
-    public static final double rotationMaxAngleVelo = 1.5*Math.PI*driveMaxVelo;
+    public static final double rotationMaxAngleVelo = 1*Math.PI*driveMaxVelo;
     public static final int steerMotorCurrentLimit = 40;
     public static final int driveMotorCurrentLimit = 45;
     public static final double driveWheelGearRatio = 21.4285714;
@@ -126,7 +126,7 @@ public final class Constants {
     public static final double L1Position = 0;
     public static final double L2Position = 34.25;
     public static final double L3Position = 50.25;
-    public static final double L4Position = 73;
+    public static final double L4Position = 73.25;
     public static final int algaePositionID = 23;
     public static double elevatorConstantSpeedDown = -0.7;
     public static double elevatorConstantSpeedUp = 0.7;
