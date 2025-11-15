@@ -9,6 +9,8 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.commands.AlgaeClawCommand;
 import frc.robot.commands.AutoLeaveLine;
 import frc.robot.commands.AutoLineUpReef;
+import frc.robot.commands.AutoRotateRight;
+import frc.robot.commands.AutoStraightAfterRotation;
 import frc.robot.commands.Drive;
 import frc.robot.commands.IntakeUntilBeamBreak;
 import frc.robot.commands.PIDElevatorCommand;
@@ -27,6 +29,8 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -51,6 +55,7 @@ public class RobotContainer {
  
   public final SwerveDrivetrain swerveDrivetrain = new SwerveDrivetrain(m_driverController, robot);
   //public final AlgaeClaw algaeClaw = new AlgaeClaw( );
+  PowerDistribution examplePD = new PowerDistribution(1, ModuleType.kRev);
  
   public final Climber climber = new Climber();
   public final Placer placer = new Placer();
@@ -71,6 +76,7 @@ public class RobotContainer {
     configureBindings();
    // SmartDashboard.putData(new PowerDistribution(1, ModuleType.kRev));
     SmartDashboard.putData(CommandScheduler.getInstance());
+    SmartDashboard.putData(examplePD);
     
   //negate to match joystick to robot
     swerveDrivetrain.setDefaultCommand(new Drive(swerveDrivetrain, () -> -m_driverController.getLeftX(), () -> -m_driverController.getRightX(), () -> -m_driverController.getLeftY()));
@@ -205,12 +211,20 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     Command auto = new AutoLeaveLine(swerveDrivetrain);
+    Command turnAuto = new AutoRotateRight(swerveDrivetrain);
+    Command straightAfterRotation = new AutoStraightAfterRotation(swerveDrivetrain);
     //PathPlannerAuto auto = new PathPlannerAuto(autoChooser.getSelected());
     //SmartDashboard.putString("Auto Selected", autoChooser.getSelected());
     //return autoChooser.getSelected(); 
     //return auto.andThen(Commands.runOnce(swerveDrivetrain::stop));
+
+    //Main auto
     return auto.andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).andThen(Commands.waitSeconds(3)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).andThen(Commands.waitSeconds(2)).andThen(Commands.runOnce(elevator::setIdle, elevator));
+
    //return auto.andThen(new IntakeUntilBeamBreak(intake, placer, this)).andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L4, this)).andThen(Commands.waitSeconds(.5));
+
+   //Working on auto to right 
+    //return auto.andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(turnAuto).andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(straightAfterRotation).andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).andThen(Commands.waitSeconds(3)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).andThen(Commands.waitSeconds(2)).andThen(Commands.runOnce(elevator::setIdle, elevator));
 
   }
   public Command driveTenFeetThenStop(){

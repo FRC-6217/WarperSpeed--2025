@@ -133,14 +133,19 @@ public class Elevator extends SubsystemBase {
 
     if(L0sensor){
       setL0();
+      System.out.println("L0");
     }else if(!L1sensor.get()){
       setL1();
+      System.out.println("L1");
     }else if(!L2sensor.get()){
       setL2();
+      System.out.println("L2");
     }else if(!L3sensor.get()){
       setL3();
+      System.out.println("L3");
     }else if(!L4sensor.get()){
       setL4AndStop();
+      System.out.println("L4");
     }
 
 
@@ -188,6 +193,7 @@ public class Elevator extends SubsystemBase {
       }else{
         pidOutput = pidController.calculate(getPosition());
       }
+      SmartDashboard.putNumber("Elevator PID Output ", pidOutput);
         pidOutput = MathUtil.clamp(pidOutput, -.5, .5);
 
         
@@ -271,6 +277,7 @@ public class Elevator extends SubsystemBase {
   }
   
   public void setIdle(){
+    System.out.println("Here");
     setpoint = getPosition();
     eleState = EleState.PIDOn;
   }
