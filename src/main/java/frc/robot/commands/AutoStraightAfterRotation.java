@@ -29,7 +29,7 @@ public class AutoStraightAfterRotation extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    swerveDrivetrain.drive(new Translation2d(-1,0), 0);
+    swerveDrivetrain.relativeDriveFlippedOrientation(new Translation2d(-1,0), 0);
   }
 
   // Called once the command ends or is interrupted.

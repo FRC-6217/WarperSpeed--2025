@@ -29,6 +29,7 @@ public class AutoRotateRight extends Command {
   @Override
   public void execute() {
     swerveDrivetrain.drive(new Translation2d(0,0), -1);
+
   }
 
   // Called once the command ends or is interrupted.
@@ -40,6 +41,6 @@ public class AutoRotateRight extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return swerveDrivetrain.sOdometry.getEstimatedPosition().getRotation().getDegrees() <= 150;
+    return Math.abs(swerveDrivetrain.sOdometry.getEstimatedPosition().getRotation().getDegrees()) <= 150;
   }
 }

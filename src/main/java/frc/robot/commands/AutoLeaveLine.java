@@ -44,5 +44,6 @@ public class AutoLeaveLine extends Command {
   @Override
   public boolean isFinished() {
     return swerveDrivetrain.sOdometry.getEstimatedPosition().getX() <= -1.3;
+    //lower if run from right
   }
 }

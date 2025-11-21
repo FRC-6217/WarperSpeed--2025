@@ -219,12 +219,12 @@ public class RobotContainer {
     //return auto.andThen(Commands.runOnce(swerveDrivetrain::stop));
 
     //Main auto
-    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).andThen(Commands.waitSeconds(3)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).andThen(Commands.waitSeconds(2)).andThen(Commands.runOnce(elevator::setIdle, elevator));
-
+  //  return auto.andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).andThen(Commands.waitSeconds(3)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).andThen(Commands.waitSeconds(2)).andThen(Commands.runOnce(elevator::setIdle, elevator));
+    
    //return auto.andThen(new IntakeUntilBeamBreak(intake, placer, this)).andThen(Commands.runOnce(swerveDrivetrain::stop, swerveDrivetrain)).andThen(new PIDElevatorCommand(elevator, EleLevel.L4, this)).andThen(Commands.waitSeconds(.5));
 
    //Working on auto to right 
-    //return auto.andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(turnAuto).andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(straightAfterRotation).andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).andThen(Commands.waitSeconds(3)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).andThen(Commands.waitSeconds(2)).andThen(Commands.runOnce(elevator::setIdle, elevator));
+    return auto.andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(turnAuto).andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(straightAfterRotation).andThen(Commands.runOnce(swerveDrivetrain::stop)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L4Position)).andThen(Commands.waitSeconds(3)).andThen(new PlacerCommand(placer)).andThen(new PIDElevatorCommand(elevator, RobotConstants.L2Position)).andThen(Commands.waitSeconds(2)).andThen(Commands.runOnce(elevator::setIdle, elevator));
 
   }
   public Command driveTenFeetThenStop(){
